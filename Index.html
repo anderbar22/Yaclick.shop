@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YACLICK.SHOP - Live Shopping & Split Payment</title>
+    <!-- Tailwind CSS para el diseño oscuro y moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Manifest para convertirla en PWA instalable -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0a0f">
+</head>
+<body class="min-h-screen bg-[#0a0a0f] text-white font-sans pb-24">
+
+    <!-- BARRA SUPERIOR DE ANUNCIO -->
+    <div class="bg-gradient-to-r from-purple-700 via-fuchsia-600 to-cyan-500 text-[11px] font-bold text-center py-2 px-3">
+        🚀 YACLICK.SHOP • Live Shopping + Split Payment (6% Plataforma + Afiliados)
+    </div>
+
+    <!-- HEADER / NAVEGACIÓN -->
+    <header class="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-[#0f0f17] sticky top-0 z-40">
+        <div onclick="cambiarVista('home')" class="cursor-pointer">
+            <h1 class="text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500">
+                YACLICK.SHOP
+            </h1>
+            <p class="text-[10px] text-gray-400">Haz ventas, haz compras, haz Yaclick</p>
+        </div>
+        <button onclick="cambiarVista('carrito')" class="relative bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded-xl text-sm font-semibold border border-cyan-500/30">
+            🛒 Carrito <span id="badge-carrito" class="ml-1 bg-fuchsia-600 text-white text-xs px-2 py-0.5 rounded-full">0</span>
+        </button>
+    </header>
+
+    <!-- VISTA 1: HOME & SALAS EN VIVO -->
+    <main id="vista-home" class="p-4 max-w-md mx-auto space-y-5">
+        <div class="grid grid-cols-2 gap-3">
+            <button onclick="cambiarVista('home')" class="bg-gradient-to-r from-cyan-500 to-blue-600 py-3 rounded-xl font-bold text-sm shadow-lg">🛍️ Explorar Live</button>
+            <button onclick="alert('Panel de Vendedor: Próximamente integración con pasarela de pagos y alta de tiendas chilenas e internacionales.')" class="bg-[#181826] border border-fuchsia-500/50 py-3 rounded-xl font-bold text-sm text-fuchsia-300">🏪 Ser Vendedor</button>
+        </div>
+
+        <div class="space-y-3">
+            <h2 class="text-base font-bold flex items-center justify-between">
+                <span>Creadores & Tiendas en Live</span>
+                <span class="text-xs text-red-500 font-semibold animate-pulse">● EN VIVO</span>
+            </h2>
+            <div id="contenedor-salas" class="space-y-3">
+                <!-- Se llena mediante JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- VISTA 2: SALA INTERACTIVA & CHAT DUAL -->
+    <main id="vista-sala" class="p-4 max-w-md mx-auto space-y-4 hidden">
+        <button onclick="cambiarVista('home')" class="text-cyan-400 text-sm font-semibold">← Volver a tiendas</button>
+        <div id="reproductor-sala" class="relative rounded-2xl overflow-hidden border border-fuchsia-500/40 bg-black aspect-[9/14] max-h-[360px] flex flex-col justify-between p-3">
+            <!-- Dinámico -->
+        </div>
+        <!-- Chat Dual & IA -->
+        <div class="bg-[#141420] p-3 rounded-2xl border border-gray-800 space-y-2">
+            <div class="flex justify-between items-center text-xs text-gray-400 border-b border-gray-800 pb-2">
+                <span>💬 Chat en Vivo (Modo Dueño / IA)</span>
+                <span class="text-cyan-400 font-bold">Activo 24/7</span>
+            </div>
+            <div id="caja-chat" class="h-24 overflow-y-auto space-y-1 text-xs text-gray-300">
+                <p><strong class="text-fuchsia-400">Agente IA Yaclick:</strong> ¡Hola! Pregunta por tallas, envíos a todo Chile o stock internacional.</p>
+            </div>
+            <div class="flex gap-2">
+                <input type="text" id="input-chat" placeholder="Escribe tu consulta..." class="bg-black/50 border border-gray-800 text-xs rounded-lg px-3 py-2 w-full text-white focus:outline-none focus:border-cyan-400">
+                <button onclick="enviarMensajeChat()" class="bg-cyan-500 text-black text-xs font-bold px-3 py-2 rounded-lg">Enviar</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- VISTA 3: CARRITO Y SPLIT PAYMENT AUTOMÁTICO -->
+    <main id="vista-carrito" class="p-4 max-w-md mx-auto space-y-4 hidden">
+        <button onclick="cambiarVista('home')" class="text-cyan-400 text-sm mb-2 inline-block">← Seguir comprando</button>
+        <h2 class="text-lg font-bold">Tu Carrito & Split Payment</h2>
+        <div id="resumen-carrito" class="space-y-3">
+            <!-- Dinámico -->
+        </div>
+    </main>
+
+    <!-- SCRIPT DE FUNCIONAMIENTO E INTERACTIVIDAD -->
+    <script>
+        const salasEnVivo = [
+            {
+                id: 1,
+                tienda: "Camila Rossi - Moda & Estilo SpA",
+                titulo: "Liquidación Chaquetas Urban Oversized 🔥",
+                espectadores: 512,
+                modo: "SIMULIVE 24/7",
+                producto: "Chaqueta Cortaviento Neón Pro",
+                precio: 34990,
+                comisionAfiliado: 10,
+                imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&q=80"
+            },
+            {
+                id: 2,
+                tienda: "Mateo - Tech Gadgets Chile",
+                titulo: "Audífonos Inalámbricos ANC con Envíos a Lo Prado",
+                espectadores: 384,
+                modo: "LIVE REAL",
+                producto: "Audífonos Pro ANC Black Edition",
+                precio: 29990,
+                comisionAfiliado: 8,
+                imagen: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80"
+            }
+        ];
+
+        let carrito = [];
+        let salaActual = null;
+
+        function renderSalas() {
+            const contenedor = document.getElementById("contenedor-salas");
+            contenedor.innerHTML = salasEnVivo.map(sala => `
+                <div onclick="abrirSala(${sala.id})" class="bg-[#141420] rounded-2xl overflow-hidden border border-gray-800 cursor-pointer p-3 hover:border-cyan-500/50 transition-all">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs text-cyan-400 font-semibold">${sala.tienda}</span>
+                        <span class="bg-red-600/80 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">${sala.modo}</span>
+                    </div>
+                    <h3 class="font-bold text-sm">${sala.titulo}</h3>
+                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-gray-800/80">
+                        <span class="text-fuchsia-400 text-sm font-black">$${sala.precio.toLocaleString("es-CL")} CLP</span>
+                        <span class="text-[10px] text-gray-400">👁️ ${sala.espectadores} viendo</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function abrirSala(id) {
+            salaActual = salasEnVivo.find(s => s.id === id);
+            document.getElementById("reproductor-sala").innerHTML = `
+                <img src="${salaActual.imagen}" class="absolute inset-0 w-full h-full object-cover opacity-60">
+                <div class="relative z-10 flex justify-between items-center">
+                    <span class="bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">● ${salaActual.modo}</span>
+                    <span class="bg-black/70 text-xs px-2.5 py-1 rounded-full">👁️ ${salaActual.espectadores} espectadores</span>
+                </div>
+                <div class="relative z-10 bg-[#12121c]/95 backdrop-blur-md p-3 rounded-xl border border-cyan-400/40 flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-xs">${salaActual.producto}</h3>
+                        <p class="text-sm font-black text-cyan-400">$${salaActual.precio.toLocaleString("es-CL")} CLP</p>
+                    </div>
+                    <button onclick="agregarAlCarrito()" class="bg-gradient-to-r from-cyan-500 to-fuchsia-600 text-xs font-bold px-3 py-2 rounded-lg shadow">
+                        Comprar
+                    </button>
+                </div>
+            `;
+            cambiarVista('sala');
+        }
+
+        function agregarAlCarrito() {
+            carrito.push(salaActual);
+            document.getElementById("badge-carrito").innerText = carrito.length;
+            alert(`¡Agregado al carrito con éxito!`);
+            cambiarVista('carrito');
+        }
+
+        function cambiarVista(vista) {
+            document.getElementById("vista-home").classList.add("hidden");
+            document.getElementById("vista-sala").classList.add("hidden");
+            document.getElementById("vista-carrito").classList.add("hidden");
+
+            if (vista === 'home') document.getElementById("vista-home").classList.remove("hidden");
+            if (vista === 'sala') document.getElementById("vista-sala").classList.remove("hidden");
+            if (vista === 'carrito') {
+                document.getElementById("vista-carrito").classList.remove("hidden");
+                renderCarrito();
+            }
+        }
+
+        function renderCarrito() {
+            const cont = document.getElementById("resumen-carrito");
+            if (carrito.length === 0) {
+                cont.innerHTML = `<div class="bg-[#141420] p-6 rounded-2xl text-center text-gray-400 border border-gray-800">Tu carrito está vacío.</div>`;
+                return;
+            }
+
+            let subtotal = carrito.reduce((acc, item) => acc + item.precio, 0);
+            let comisionPlataforma = Math.round(subtotal * 0.06); // 6% para YACLICK.SHOP
+            let pagoVendedor = subtotal - comisionPlataforma;
+
+            cont.innerHTML = `
+                ${carrito.map(item => `
+                    <div class="bg-[#141420] p-3 rounded-xl border border-gray-800 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-sm">${item.producto}</p>
+                            <p class="text-[10px] text-gray-400">${item.tienda}</p>
+                        </div>
+                        <p class="font-bold text-fuchsia-400">$${item.precio.toLocaleString("es-CL")}</p>
+                    </div>
+                `).join('')}
+                
+                <div class="bg-[#181826] p-4 rounded-2xl border border-fuchsia-500/30 space-y-2 text-xs">
+                    <div class="flex justify-between text-gray-300">
+                        <span>Subtotal Productos:</span>
+                        <span>$${subtotal.toLocaleString("es-CL")} CLP</span>
+                    </div>
+                    <div class="flex justify-between text-cyan-400 font-semibold">
+                        <span>Comisión Automática Yaclick (6%):</span>
+                        <span>$${comisionPlataforma.toLocaleString("es-CL")} CLP</span>
+                    </div>
+                    <div class="flex justify-between text-gray-400">
+                        <span>Monto Directo a Tienda (94%):</span>
+                        <span>$${pagoVendedor.toLocaleString("es-CL")} CLP</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-sm pt-2 border-t border-gray-700 text-white">
+                        <span>Total Orden:</span>
+                        <span class="text-green-400">$${subtotal.toLocaleString("es-CL")} CLP</span>
+                    </div>
+                </div>
+
+                <button onclick="procesarPagoYWhatsApp(${subtotal})" class="w-full py-3 rounded-xl font-bold bg-green-600 hover:bg-green-500 text-white text-sm shadow-lg">
+                    📲 Pagar y Coordinar por WhatsApp Logístico ✅
+                </button>
+            `;
+        }
+
+        function enviarMensajeChat() {
+            const input = document.getElementById("input-chat");
+            const caja = document.getElementById("caja-chat");
+            if(!input.value.trim()) return;
+
+            caja.innerHTML += `<p><strong class="text-cyan-400">Tú:</strong> ${input.value}</p>`;
+            let textoUsuario = input.value;
+            input.value = "";
+
+            setTimeout(() => {
+                caja.innerHTML += `<p><strong class="text-fuchsia-400">Agente IA Yaclick:</strong> ¡Entendido! Tu consulta sobre "${textoUsuario}" fue registrada. Te ayudamos a coordinar el despacho seguro en Santiago o regiones.</p>`;
+                caja.scrollTop = caja.scrollHeight;
+            }, 800);
+        }
+
+        function procesarPagoYWhatsApp(total) {
+            alert(`¡Simulación de Split Payment (6%) procesada con éxito!\nRedirigiendo a WhatsApp Logístico...`);
+            let mensaje = encodeURIComponent(`Hola YACLICK.SHOP, quiero confirmar mi compra por un total de $${total.toLocaleString("es-CL")} CLP. Solicito envío logístico.`);
+            window.open(`https://wa.me/56900000000?text=${mensaje}`, '_blank');
+        }
+
+        renderSalas();
+    </script>
+</body>
+</html>
