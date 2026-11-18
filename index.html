@@ -6,12 +6,32 @@
   <title>YACLICK.SHOP - E-commerce Live, Términos y Seguridad</title>
   <meta name="theme-color" content="#0a0a0f">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { background-color: #0a0a0f; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
-    .glass { background: rgba(23, 23, 35, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    .gradient-text { background: linear-gradient(90deg, #38bdf8, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .btn-primary { background: linear-gradient(90deg, #0284c7, #9333ea); }
-    .medidor-card { background: #000; border: 3px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border-radius: 20px; }
+    body {
+      background-color: #0a0a0f;
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .glass {
+      background: rgba(23, 23, 35, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #38bdf8, #c084fc, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #0284c7, #9333ea);
+    }
+    .medidor-card {
+      background: #000;
+      border: 3px solid #222;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      border-radius: 20px;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -24,7 +44,7 @@
   <!-- HEADER -->
   <header class="sticky top-0 z-40 glass border-b border-white/10">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3 cursor-pointer" onclick="mostrarSeccion('inicio')">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="showSection('inicio')">
         <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-fuchsia-600 to-cyan-500 flex items-center justify-center font-black text-white text-lg shadow-lg">Y</div>
         <div>
           <h1 class="font-extrabold text-lg tracking-tight gradient-text leading-none">YACLICK.SHOP</h1>
@@ -33,24 +53,24 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <button onclick="toggleCarrito()" class="relative p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
+        <button type="button" onclick="toggleCart()" class="relative p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
           🛒
-          <span id="contador-carrito" class="absolute -top-1.5 -right-1.5 bg-fuchsia-600 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+          <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-fuchsia-600 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
         </button>
-        <button onclick="toggleMenu()" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-lg">
+        <button type="button" onclick="toggleMenu()" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-lg">
           ☰
         </button>
       </div>
     </div>
 
     <!-- MENÚ -->
-    <nav id="menu-navegacion" class="hidden border-t border-white/10 bg-[#0f0f18] px-4 py-3 space-y-2">
-      <button onclick="mostrarSeccion('inicio'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium">🏪 Windows Live Shopping</button>
-      <button onclick="cambiarModoTransmision('LIVE'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium text-cyan-400">🔴 Opción 1: Live en Vivo (Real)</button>
-      <button onclick="cambiarModoTransmision('SIMULIVE'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium text-purple-400">📼 Opción 2: Simulive (Bucle 6h)</button>
-      <button onclick="mostrarSeccion('catalogo'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium">🔍 Explorar Catálogo</button>
-      <button onclick="mostrarSeccion('legal'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium">🛡️ Términos, Condiciones y Legal</button>
-      <button onclick="abrirModalRegistro('comprador'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg bg-purple-600/20 border border-purple-500/40 text-purple-300 flex items-center gap-3 text-sm font-semibold">👤 Ingresar / Registro</button>
+    <nav id="nav-menu" class="hidden border-t border-white/10 bg-[#0f0f18] px-4 py-3 space-y-2">
+      <button type="button" onclick="showSection('inicio'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium">🏪 Windows Live Shopping</button>
+      <button type="button" onclick="setStreamMode('LIVE'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium text-cyan-400">🔴 Opción 1: Live en Vivo (Real)</button>
+      <button type="button" onclick="setStreamMode('SIMULIVE'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium text-purple-400">📼 Opción 2: Simulive (Bucle 6h)</button>
+      <button type="button" onclick="showSection('catalogo'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium">🔍 Explorar Catálogo</button>
+      <button type="button" onclick="showSection('legal'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium">🛡️ Términos, Condiciones y Legal</button>
+      <button type="button" onclick="openRegisterModal('comprador'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg bg-purple-600/20 border border-purple-500/40 text-purple-300 flex items-center gap-3 text-sm font-semibold">👤 Ingresar / Registro</button>
     </nav>
   </header>
 
@@ -59,10 +79,10 @@
 
     <!-- SECCIÓN INICIO: WINDOWS LIVE SHOPPING -->
     <section id="sec-inicio" class="space-y-8">
-      
+
       <div class="glass rounded-2xl p-6 text-center space-y-3">
-        <div class="flex justify-center items-center gap-2">
-          <span id="badge-modo-actual" class="inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30">
+        <div class="flex justify-center items-center gap-2 flex-wrap">
+          <span id="badge-stream-mode" class="inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30">
             🔴 MODO: LIVE EN VIVO
           </span>
           <span class="inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
@@ -75,53 +95,57 @@
       </div>
 
       <!-- BANNER PUBLICITARIO (1 MINUTO) -->
-      <div id="banner-publicidad" class="hidden glass border-2 border-amber-500/60 rounded-2xl p-5 text-center space-y-3 bg-gradient-to-r from-amber-950/40 via-purple-950/40 to-slate-950/40">
+      <div id="ad-banner" class="hidden glass border-2 border-amber-500/60 rounded-2xl p-5 text-center space-y-3 bg-gradient-to-r from-amber-950/40 via-purple-950/40 to-slate-950/40">
         <div class="flex justify-between items-center">
           <span class="bg-amber-500 text-black text-[10px] font-black px-2.5 py-1 rounded uppercase tracking-widest">📢 Publicidad Comercial (1 Min)</span>
-          <span id="contador-publi" class="text-xs text-amber-300 font-bold">Espacio de Grandes Marcas</span>
+          <span id="ad-counter" class="text-xs text-amber-300 font-bold">Espacio de Grandes Marcas</span>
         </div>
         <div class="py-4">
           <h3 class="text-xl font-extrabold text-amber-400">¡Arrienda este espacio publicitario de alta conversión!</h3>
           <p class="text-xs text-slate-300 mt-1">Impacta a miles de compradores en nuestra rotación comercial de Simulive.</p>
         </div>
-        <button onclick="cerrarPublicidad()" class="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-black uppercase tracking-wider">Saltar Publicidad en <span id="segundos-publi">60</span>s ⏭️</button>
+        <button type="button" onclick="closeAdBanner()" class="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-black uppercase tracking-wider">
+          Saltar Publicidad en <span id="ad-seconds">60</span>s ⏭️
+        </button>
       </div>
 
       <!-- SELECCIÓN DE VENTANAS LIVE -->
       <div class="space-y-3">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between flex-wrap gap-2">
           <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300">Selecciona tu Ventana de Transmisión</h3>
-          <button onclick="activarPublicidadComercial()" class="text-xs bg-amber-500/20 border border-amber-500/40 text-amber-300 px-3 py-1 rounded-lg font-bold">📺 Ver Espacio Publicitario (1 min)</button>
+          <button type="button" onclick="startCommercialAd()" class="text-xs bg-amber-500/20 border border-amber-500/40 text-amber-300 px-3 py-1 rounded-lg font-bold">
+            📺 Ver Espacio Publicitario (1 min)
+          </button>
         </div>
-        <div id="grid-ventanas-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+        <div id="windows-selector-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
       </div>
 
       <!-- WIDGET PRINCIPAL: LEVEL YACLICK -->
       <div class="grid md:grid-cols-12 gap-6 items-center">
-        
+
         <!-- PANEL IZQUIERDO / CENTRAL: INDICADOR LEVEL YACLICK -->
         <div class="md:col-span-8 medidor-card p-5 text-center relative space-y-4">
           <div>
-            <h3 id="titulo-ventana-activo" class="text-xs font-bold text-slate-400 tracking-widest uppercase">Ventana #01 • Moda & Estilo SpA</h3>
+            <h3 id="active-window-title" class="text-xs font-bold text-slate-400 tracking-widest uppercase">Ventana #01 • Moda & Estilo SpA</h3>
             <h2 class="text-2xl md:text-3xl font-black text-cyan-400 tracking-wider mt-1 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]">LEVEL YACLICK</h2>
             <p class="text-[11px] text-fuchsia-400 font-bold uppercase tracking-widest mt-0.5">INDICADOR DE OPORTUNIDAD EN VIVO</p>
           </div>
 
           <!-- PANTALLA Y BARRA MULTICOLOR -->
           <div class="flex items-center justify-center gap-4 bg-gradient-to-b from-[#0a0a0f] to-[#12121f] p-4 rounded-xl border border-white/10 relative min-h-[260px]">
-            
-            <div id="barra-nivel-colores" class="w-6 h-52 bg-black border border-white/20 rounded-lg p-1 flex flex-col-reverse justify-between gap-1 shadow-inner"></div>
+
+            <div id="level-color-bar" class="w-6 h-52 bg-black border border-white/20 rounded-lg p-1 flex flex-col-reverse justify-between gap-1 shadow-inner"></div>
 
             <div class="flex-1 bg-black/90 border-2 border-cyan-500/40 rounded-xl p-3 flex flex-col items-center justify-center relative overflow-hidden h-52">
-              <span id="estado-ganador" class="absolute top-2 text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full animate-pulse">● LIVE EN CURSO</span>
-              
+              <span id="winner-status" class="absolute top-2 text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full animate-pulse">● LIVE EN CURSO</span>
+
               <div class="my-auto relative group">
-                <img id="img-producto-activo" src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=400&q=80" class="w-28 h-28 object-cover rounded-xl border-2 border-fuchsia-500 shadow-xl">
+                <img id="active-product-img" src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=400&q=80" alt="Producto activo" class="w-28 h-28 object-cover rounded-xl border-2 border-fuchsia-500 shadow-xl">
               </div>
 
               <div class="w-full text-center mt-1">
-                <h4 id="nombre-producto-activo" class="font-extrabold text-xs text-white truncate">Chaqueta Urban Oversized</h4>
-                <p id="precio-producto-activo" class="text-cyan-400 font-extrabold text-sm">$29.990 CLP</p>
+                <h4 id="active-product-name" class="font-extrabold text-xs text-white truncate">Chaqueta Urban Oversized</h4>
+                <p id="active-product-price" class="text-cyan-400 font-extrabold text-sm">$29.990 CLP</p>
               </div>
             </div>
 
@@ -134,9 +158,9 @@
 
           <!-- BOTÓN YACLEA Y COMPRA -->
           <div class="pt-2">
-            <button onclick="darYaclick()" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 via-fuchsia-600 to-purple-600 hover:scale-[1.02] active:scale-95 transition font-black text-sm md:text-base text-white shadow-2xl border border-white/30 uppercase tracking-widest flex items-center justify-center gap-2">
+            <button type="button" onclick="handleYaclick()" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 via-fuchsia-600 to-purple-600 hover:scale-[1.02] active:scale-95 transition font-black text-sm md:text-base text-white shadow-2xl border border-white/30 uppercase tracking-widest flex items-center justify-center gap-2">
               <span>⚡ Yaclea y Compra</span>
-              <span id="contador-yaclicks" class="bg-black/50 px-3 py-1 rounded-lg text-xs">0 Yaclicks</span>
+              <span id="yaclick-counter" class="bg-black/50 px-3 py-1 rounded-lg text-xs">0 Yaclicks</span>
             </button>
             <p class="text-[11px] text-slate-400 mt-2">¡Haz clic repetidamente para llenar el nivel Level Yaclick y apartar el stock!</p>
           </div>
@@ -149,7 +173,7 @@
               <span>📸 Productos de la Semana</span>
               <span class="text-[10px] text-cyan-400">Selecciona</span>
             </h4>
-            <div id="galeria-semana" class="grid grid-cols-2 gap-2"></div>
+            <div id="weekly-gallery" class="grid grid-cols-2 gap-2"></div>
           </div>
 
           <div class="glass rounded-2xl p-4 space-y-3">
@@ -157,14 +181,16 @@
               <h4 class="font-bold text-xs text-slate-300 flex items-center gap-1.5">
                 <span>💬 Chat en Vivo</span>
               </h4>
-              <button onclick="toggleAgenteIA()" id="btn-estado-ia" class="text-[10px] bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded-full font-bold">🤖 IA: Activada</button>
+              <button type="button" onclick="toggleAiAgent()" id="btn-ai-status" class="text-[10px] bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded-full font-bold">
+                🤖 IA: Activada
+              </button>
             </div>
-            <div id="chat-mensajes" class="h-28 overflow-y-auto space-y-2 text-xs pr-1 bg-black/40 p-2 rounded-xl">
+            <div id="chat-messages" class="h-28 overflow-y-auto space-y-2 text-xs pr-1 bg-black/40 p-2 rounded-xl">
               <div class="bg-white/5 p-1.5 rounded"><strong class="text-cyan-400">Carlos R.:</strong> ¿Tienen stock disponible?</div>
               <div class="bg-purple-900/30 border border-purple-500/30 p-1.5 rounded"><strong class="text-fuchsia-400">Agente IA Yaclick:</strong> ¡Hola Carlos! Sí, la ventana cuenta con stock verificado.</div>
             </div>
-            <form onsubmit="enviarMensajeChat(event)" class="flex gap-2">
-              <input id="input-chat" type="text" placeholder="Escribe tu consulta..." class="flex-1 bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyan-500">
+            <form onsubmit="sendChatMessage(event)" class="flex gap-2">
+              <input id="chat-input" type="text" placeholder="Escribe tu consulta..." class="flex-1 bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyan-500">
               <button type="submit" class="btn-primary px-3 py-1.5 rounded-xl text-xs font-bold">Enviar</button>
             </form>
           </div>
@@ -178,9 +204,9 @@
       <div class="glass rounded-2xl p-5 space-y-3">
         <h2 class="text-xl font-extrabold">🛍️ Catálogo Global con Split Payment</h2>
         <p class="text-xs text-slate-400">Selecciona la cantidad exacta de productos que deseas comprar.</p>
-        <input id="buscador-productos" oninput="filtrarProductos()" type="text" placeholder="Buscar por nombre..." class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500">
+        <input id="product-search" oninput="filterProducts()" type="text" placeholder="Buscar por nombre..." class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500">
       </div>
-      <div id="grid-productos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+      <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
     </section>
 
     <!-- SECCIÓN TÉRMINOS, CONDICIONES Y RESPONSABILIDADES -->
@@ -188,11 +214,11 @@
       <div class="glass rounded-2xl p-6 space-y-6">
         <h2 class="text-xl font-extrabold text-cyan-400">🛡️ Términos, Condiciones y Marco Legal de YACLICK.SHOP</h2>
         <p class="text-xs text-slate-300">Bienvenido a YACLICK.SHOP. Al utilizar nuestra plataforma de Live Commerce, Windows Live Shopping y sistemas de gamificación, usted acepta de manera expresa los siguientes términos de responsabilidad y seguridad operativa.</p>
-        
+
         <div class="space-y-4 text-xs text-slate-300">
           <div class="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
             <h3 class="font-extrabold text-sm text-cyan-300">1. Naturaleza de la Plataforma e Intermediación</h3>
-            <p>YACLICK.SHOP actúa estrictamente como una plataforma tecnológica intermediaria que facilita la interacción comercial mediante transmisiones en vivo, el sistema de turnos <strong>Level Yaclick</strong>, pasarelas de pago divididas (*Split Payment*) y coordinación logística vía WhatsApp.</p>
+            <p>YACLICK.SHOP actúa estrictamente como una plataforma tecnológica intermediaria que facilita la interacción comercial mediante transmisiones en vivo, el sistema de turnos <strong>Level Yaclick</strong>, pasarelas de pago divididas (<em>Split Payment</em>) y coordinación logística vía WhatsApp.</p>
           </div>
 
           <div class="bg-red-950/30 border border-red-500/40 rounded-xl p-4 space-y-2">
@@ -222,31 +248,31 @@
   </main>
 
   <!-- MODAL CARRITO -->
-  <div id="modal-carrito" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
+  <div id="cart-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
     <div class="w-full max-w-md bg-[#0f0f18] h-full p-5 flex flex-col justify-between border-l border-white/10 overflow-y-auto">
       <div class="space-y-4">
         <div class="flex items-center justify-between border-b border-white/10 pb-3">
           <h3 class="font-extrabold text-base">🛒 Tu Carrito & Split Payment</h3>
-          <button onclick="toggleCarrito()" class="text-slate-400 hover:text-white text-xl">✕</button>
+          <button type="button" onclick="toggleCart()" class="text-slate-400 hover:text-white text-xl">✕</button>
         </div>
-        <div id="lista-carrito" class="space-y-3 max-h-60 overflow-y-auto"></div>
+        <div id="cart-items-list" class="space-y-3 max-h-60 overflow-y-auto"></div>
       </div>
 
       <div class="space-y-3 border-t border-white/10 pt-4">
         <div class="bg-white/5 rounded-xl p-3 space-y-1.5 text-xs">
-          <div class="flex justify-between"><span>Subtotal:</span><span id="sub-carrito" class="font-bold">$0</span></div>
-          <div class="flex justify-between text-fuchsia-400"><span>Comisión Plataforma (6%):</span><span id="com-plataforma">$0</span></div>
-          <div class="flex justify-between text-cyan-400"><span>Comisión Afiliado (10%):</span><span id="com-afiliado">$0</span></div>
-          <div class="flex justify-between text-sm font-extrabold border-t border-white/10 pt-2 mt-1"><span>Total a Pagar:</span><span id="total-carrito" class="text-emerald-400">$0</span></div>
+          <div class="flex justify-between"><span>Subtotal:</span><span id="cart-subtotal" class="font-bold">$0</span></div>
+          <div class="flex justify-between text-fuchsia-400"><span>Comisión Plataforma (6%):</span><span id="platform-fee">$0</span></div>
+          <div class="flex justify-between text-cyan-400"><span>Comisión Afiliado (10%):</span><span id="affiliate-fee">$0</span></div>
+          <div class="flex justify-between text-sm font-extrabold border-t border-white/10 pt-2 mt-1"><span>Total a Pagar:</span><span id="cart-total" class="text-emerald-400">$0</span></div>
         </div>
 
-        <button onclick="procesarSplitPayment()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm transition">
+        <button type="button" onclick="processSplitPayment()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm transition">
           💳 Pagar con Split Payment Seguro
         </button>
 
-        <div id="bloque-whatsapp" class="bg-slate-900 border border-white/10 rounded-xl p-3 text-center space-y-2">
-          <p id="estado-whatsapp" class="text-[11px] text-amber-400">🔒 WhatsApp Logístico Protegido</p>
-          <button id="btn-whatsapp" disabled onclick="abrirWhatsAppLogistico()" class="w-full py-2.5 rounded-lg bg-white/10 text-slate-500 text-xs font-bold cursor-not-allowed">
+        <div id="whatsapp-box" class="bg-slate-900 border border-white/10 rounded-xl p-3 text-center space-y-2">
+          <p id="whatsapp-status" class="text-[11px] text-amber-400">🔒 WhatsApp Logístico Protegido</p>
+          <button id="btn-whatsapp" type="button" disabled onclick="openLogisticWhatsApp()" class="w-full py-2.5 rounded-lg bg-white/10 text-slate-500 text-xs font-bold cursor-not-allowed">
             Se desbloqueará al confirmar el pago
           </button>
         </div>
@@ -255,326 +281,390 @@
   </div>
 
   <!-- MODAL REGISTRO -->
-  <div id="modal-registro" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div id="register-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="glass w-full max-w-md rounded-2xl p-6 space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="font-extrabold text-lg">Registro en YACLICK.SHOP</h3>
-        <button onclick="cerrarModalRegistro()" class="text-slate-400 hover:text-white text-xl">✕</button>
+        <button type="button" onclick="closeRegisterModal()" class="text-slate-400 hover:text-white text-xl">✕</button>
       </div>
       <div class="grid grid-cols-3 gap-2">
-        <button onclick="seleccionarRol('comprador')" id="tab-comprador" class="py-2 rounded-lg text-xs font-bold bg-purple-600 text-white">Comprador</button>
-        <button onclick="seleccionarRol('vendedor')" id="tab-vendedor" class="py-2 rounded-lg text-xs font-bold bg-white/10 text-slate-300">Vendedor</button>
-        <button onclick="seleccionarRol('afiliado')" id="tab-afiliado" class="py-2 rounded-lg text-xs font-bold bg-white/10 text-slate-300">Afiliado</button>
+        <button type="button" onclick="selectRole('comprador')" id="tab-comprador" class="py-2 rounded-lg text-xs font-bold bg-purple-600 text-white">Comprador</button>
+        <button type="button" onclick="selectRole('seller')" id="tab-seller" class="py-2 rounded-lg text-xs font-bold bg-white/10 text-slate-300">Seller</button>
+        <button type="button" onclick="selectRole('afiliado')" id="tab-afiliado" class="py-2 rounded-lg text-xs font-bold bg-white/10 text-slate-300">Afiliado</button>
       </div>
-      <form onsubmit="completarRegistro(event)" class="space-y-3">
+      <form id="register-form" onsubmit="completeRegistration(event)" class="space-y-3">
         <div>
           <label class="text-xs text-slate-300">Nombre / Razón Social</label>
-          <input required type="text" placeholder="Tu nombre" class="w-full mt-1 bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs">
+          <input id="reg-name" required type="text" placeholder="Tu nombre" class="w-full mt-1 bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs">
         </div>
         <div>
           <label class="text-xs text-slate-300">Correo Electrónico</label>
-          <input required type="email" placeholder="correo@ejemplo.com" class="w-full mt-1 bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs">
+          <input id="reg-email" required type="email" placeholder="correo@ejemplo.com" class="w-full mt-1 bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs">
         </div>
-        <button type="submit" class="w-full btn-primary py-3 rounded-xl font-bold text-sm">Registrarse</button>
+        <button type="submit" id="btn-register-submit" class="w-full btn-primary py-3 rounded-xl font-bold text-sm">Registrarse</button>
       </form>
+      <p id="register-status" class="text-center text-xs text-emerald-400"></p>
     </div>
   </div>
 
   <script>
-    let ventanasLive = [
-      { id: 1, titulo: "Ventana #01 • Moda & Estilo SpA", producto: "Chaqueta Urban Oversized", precio: 29990, img: "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80", fotosSemana: [
-        "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=300&q=80"
-      ]},
-      { id: 2, titulo: "Ventana #02 • Tech Gadgets Chile", producto: "Smartwatch Ultra Series 9", precio: 34990, img: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=500&q=80", fotosSemana: [
-        "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=300&q=80"
-      ]},
-      { id: 3, titulo: "Ventana #03 • Hogar & Confort", producto: "Set 6 Frascos de Vidrio", precio: 18990, img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=500&q=80", fotosSemana: [
-        "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=300&q=80"
-      ]},
-      { id: 4, titulo: "Ventana #04 • Café 3-6-9 T Gourmet", producto: "Café Especial de Altura", precio: 9990, img: "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&w=500&q=80", fotosSemana: [
-        "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=300&q=80",
-        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=300&q=80"
-      ]}
+    // Configuración opcional de Supabase
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+    let supabaseClient = null;
+    if (SUPABASE_URL.startsWith('http') && SUPABASE_ANON_KEY.length > 20 && window.supabase) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+
+    const liveWindows = [
+      { id: 1, title: "Ventana #01 • Moda & Estilo SpA", product: "Chaqueta Urban Oversized", price: 29990, img: "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=400&q=80", whatsapp: "56911111111" },
+      { id: 2, title: "Ventana #02 • TechImport Chile", product: "Audífonos Pro ANC", price: 24990, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80", whatsapp: "56922222222" },
+      { id: 3, title: "Ventana #03 • Hogar & Clínica", product: "Kit Vinilo Antibacterial", price: 49990, img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80", whatsapp: "56933333333" },
+      { id: 4, title: "Ventana #04 • AutoParts 10 de Julio", product: "Scanner OBD2 Bluetooth", price: 19990, img: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=400&q=80", whatsapp: "56944444444" }
     ];
 
-    let ventanaActual = ventanasLive[0];
-    let yaclicksCount = 0;
-    let carrito = [];
-    let iaActivada = true;
-    let modoTransmision = 'LIVE';
-    let segundosPubli = 60;
-    let timerPubli = null;
-
-    const coloresBarra = [
-      '#ef4444', '#ef4444', '#f97316', '#f97316', 
-      '#eab308', '#eab308', '#84cc16', '#84cc16', 
-      '#10b981', '#10b981', '#06b6d4', '#38bdf8'
+    const catalogProducts = [
+      { id: 101, name: "Chaqueta Urban Oversized", price: 29990, store: "Moda & Estilo SpA", img: "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=400&q=80" },
+      { id: 102, name: "Audífonos Pro ANC", price: 24990, store: "TechImport Chile", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80" },
+      { id: 103, name: "Kit Vinilo Antibacterial", price: 49990, store: "Hogar & Clínica", img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80" },
+      { id: 104, name: "Scanner OBD2 Bluetooth", price: 19990, store: "AutoParts 10 de Julio", img: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=400&q=80" },
+      { id: 105, name: "Zapatillas Running Carbon", price: 39990, store: "SportLive CL", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&q=80" },
+      { id: 106, name: "Reloj Inteligente AMOLED", price: 34990, store: "TechImport Chile", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80" }
     ];
 
-    function renderBarraNivel(nivel) {
-      const cont = document.getElementById('barra-nivel-colores');
-      const totalBloques = coloresBarra.length;
-      const bloquesActivos = Math.round((nivel / 100) * totalBloques);
+    let activeWindow = liveWindows[0];
+    let yaclickCount = 0;
+    let cart = [];
+    let aiEnabled = true;
+    let selectedRole = 'comprador';
+    let adTimer = null;
+    let paymentConfirmed = false;
 
-      let html = '';
-      for (let i = 0; i < totalBloques; i++) {
-        const activo = i < bloquesActivos;
-        const color = coloresBarra[i];
-        const estilo = activo ? `background-color: ${color}; box-shadow: 0 0 8px ${color};` : 'background-color: #1a1a24; opacity: 0.3;';
-        html += `<div class="w-full flex-1 rounded-sm transition-all duration-150" style="${estilo}"></div>`;
-      }
-      cont.innerHTML = html;
+    function showSection(sectionName) {
+      ['inicio', 'catalogo', 'legal'].forEach(sec => {
+        const el = document.getElementById(`sec-${sec}`);
+        if (el) el.classList.toggle('hidden', sec !== sectionName);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function renderVentanasSelector() {
-      const cont = document.getElementById('grid-ventanas-selector');
-      cont.innerHTML = ventanasLive.map(v => `
-        <button onclick="seleccionarVentana(${v.id})" class="p-3 rounded-xl border text-left transition ${v.id === ventanaActual.id ? 'bg-cyan-500/20 border-cyan-500 text-cyan-300' : 'glass border-white/10 hover:border-white/30 text-slate-300'}">
-          <span class="text-[10px] font-bold block opacity-70">Ventana #0${v.id}</span>
-          <p class="font-bold text-xs truncate mt-0.5">${v.titulo.split('•')[1] || v.titulo}</p>
-        </button>
-      `).join('');
+    function toggleMenu() {
+      const menu = document.getElementById('nav-menu');
+      menu.classList.toggle('hidden');
     }
 
-    function seleccionarVentana(id) {
-      const v = ventanasLive.find(item => item.id === id);
-      if (v) {
-        ventanaActual = v;
-        yaclicksCount = 0;
-        renderBarraNivel(0);
-        document.getElementById('contador-yaclicks').innerText = '0 Yaclicks';
-        document.getElementById('titulo-ventana-activo').innerText = v.titulo;
-        document.getElementById('img-producto-activo').src = v.img;
-        document.getElementById('nombre-producto-activo').innerText = v.producto;
-        document.getElementById('precio-producto-activo').innerText = `$${v.precio.toLocaleString('es-CL')} CLP`;
-        renderVentanasSelector();
-        renderFotosSemana();
-      }
+    function toggleCart() {
+      const modal = document.getElementById('cart-modal');
+      modal.classList.toggle('hidden');
+      renderCart();
     }
 
-    function renderFotosSemana() {
-      const cont = document.getElementById('galeria-semana');
-      cont.innerHTML = ventanaActual.fotosSemana.map((foto, idx) => `
-        <div onclick="cambiarFotoActiva('${foto}')" class="h-20 rounded-xl overflow-hidden border border-white/20 cursor-pointer hover:border-cyan-400 transition relative">
-          <img src="${foto}" class="w-full h-full object-cover">
-          <span class="absolute bottom-1 right-1 bg-black/70 text-[9px] px-1.5 rounded text-white">Ver</span>
-        </div>
-      `).join('');
-    }
-
-    function cambiarFotoActiva(url) {
-      ventanaActual.img = url;
-      document.getElementById('img-producto-activo').src = url;
-      yaclicksCount = 0;
-      renderBarraNivel(0);
-      document.getElementById('contador-yaclicks').innerText = '0 Yaclicks';
-    }
-
-    function cambiarModoTransmision(modo) {
-      modoTransmision = modo;
-      const badge = document.getElementById('badge-modo-actual');
-      if (modo === 'LIVE') {
-        badge.innerText = '🔴 MODO: LIVE EN VIVO (Real)';
-        badge.className = 'inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30';
+    function setStreamMode(mode) {
+      const badge = document.getElementById('badge-stream-mode');
+      const status = document.getElementById('winner-status');
+      if (mode === 'LIVE') {
+        badge.className = "inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30";
+        badge.innerText = "🔴 MODO: LIVE EN VIVO";
+        status.innerText = "● LIVE EN CURSO";
+        status.className = "absolute top-2 text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full animate-pulse";
       } else {
-        badge.innerText = '📼 MODO: SIMULIVE (Bucle 6h)';
-        badge.className = 'inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30';
-        activarPublicidadComercial();
+        badge.className = "inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30";
+        badge.innerText = "📼 MODO: SIMULIVE (BUCLE 6H)";
+        status.innerText = "📼 SIMULIVE ACTIVO";
+        status.className = "absolute top-2 text-[10px] bg-purple-600 text-white font-bold px-2 py-0.5 rounded-full";
       }
+      showSection('inicio');
     }
 
-    function activarPublicidadComercial() {
-      const pub = document.getElementById('banner-publicidad');
-      pub.classList.remove('hidden');
-      segundosPubli = 60;
-      document.getElementById('segundos-publi').innerText = segundosPubli;
-      if (timerPubli) clearInterval(timerPubli);
-      timerPubli = setInterval(() => {
-        segundosPubli--;
-        document.getElementById('segundos-publi').innerText = segundosPubli;
-        if (segundosPubli <= 0) {
-          cerrarPublicidad();
+    function startCommercialAd() {
+      const banner = document.getElementById('ad-banner');
+      const secSpan = document.getElementById('ad-seconds');
+      banner.classList.remove('hidden');
+      let seconds = 60;
+      secSpan.innerText = seconds;
+
+      if (adTimer) clearInterval(adTimer);
+      adTimer = setInterval(() => {
+        seconds--;
+        secSpan.innerText = seconds;
+        if (seconds <= 0) {
+          closeAdBanner();
         }
       }, 1000);
     }
 
-    function cerrarPublicidad() {
-      document.getElementById('banner-publicidad').classList.add('hidden');
-      if (timerPubli) clearInterval(timerPubli);
+    function closeAdBanner() {
+      if (adTimer) clearInterval(adTimer);
+      document.getElementById('ad-banner').classList.add('hidden');
     }
 
-    function toggleAgenteIA() {
-      iaActivada = !iaActivada;
-      const btn = document.getElementById('btn-estado-ia');
-      if (iaActivada) {
-        btn.innerText = '🤖 IA: Activada';
-        btn.className = 'text-[10px] bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded-full font-bold';
-      } else {
-        btn.innerText = '👤 IA: Desactivada (Manual)';
-        btn.className = 'text-[10px] bg-amber-500/20 border border-amber-500/40 text-amber-300 px-2 py-0.5 rounded-full font-bold';
-      }
+    function renderWindows() {
+      const grid = document.getElementById('windows-selector-grid');
+      grid.innerHTML = liveWindows.map(win => `
+        <button type="button" onclick="selectWindow(${win.id})" class="p-3 rounded-xl border text-left transition ${activeWindow.id === win.id ? 'bg-cyan-500/20 border-cyan-400 text-white' : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'}">
+          <p class="text-[10px] font-bold uppercase text-cyan-400">Ventana #0${win.id}</p>
+          <p class="text-xs font-extrabold truncate mt-0.5">${win.product}</p>
+          <p class="text-[11px] text-slate-400 mt-0.5">$${win.price.toLocaleString('es-CL')}</p>
+        </button>
+      `).join('');
     }
 
-    function darYaclick() {
-      yaclicksCount += 20;
-      if (yaclicksCount > 100) yaclicksCount = 100;
+    function selectWindow(id) {
+      const found = liveWindows.find(win => win.id === id);
+      if (!found) return;
+      activeWindow = found;
+      yaclickCount = 0;
 
-      renderBarraNivel(yaclicksCount);
-      document.getElementById('contador-yaclicks').innerText = `${yaclicksCount}% Yaclicks`;
+      document.getElementById('active-window-title').innerText = activeWindow.title;
+      document.getElementById('active-product-img').src = activeWindow.img;
+      document.getElementById('active-product-name').innerText = activeWindow.product;
+      document.getElementById('active-product-price').innerText = `$${activeWindow.price.toLocaleString('es-CL')} CLP`;
+      document.getElementById('yaclick-counter').innerText = "0 Yaclicks";
 
-      if (yaclicksCount === 100) {
-        document.getElementById('estado-ganador').innerText = '🎉 ¡GANASTE TU TURNO DE COMPRA!';
-        agregarAlCarritoConCantidad(ventanaActual.producto, ventanaActual.precio, ventanaActual.img, 1);
-        alert(`🏆 ¡Felicidades! Has completado el Level Yaclick para "${ventanaActual.producto}". Añadido al carrito con Split Payment.`);
+      updateLevelBar();
+      renderWindows();
+    }
+
+    function updateLevelBar() {
+      const bar = document.getElementById('level-color-bar');
+      const colors = [
+        'bg-cyan-500', 'bg-cyan-400', 'bg-emerald-500', 'bg-emerald-400',
+        'bg-yellow-400', 'bg-amber-500', 'bg-orange-500', 'bg-fuchsia-500',
+        'bg-purple-500', 'bg-red-500'
+      ];
+      const level = Math.min(10, yaclickCount);
+      bar.innerHTML = colors.map((color, idx) => `
+        <div class="w-full h-3.5 rounded-sm transition-all ${idx < level ? color + ' shadow-md' : 'bg-white/10'}"></div>
+      `).join('');
+    }
+
+    function handleYaclick() {
+      yaclickCount++;
+      document.getElementById('yaclick-counter').innerText = `${yaclickCount} Yaclicks`;
+      updateLevelBar();
+
+      if (yaclickCount >= 10) {
+        addToCart({
+          id: activeWindow.id,
+          name: activeWindow.product,
+          price: activeWindow.price,
+          store: activeWindow.title
+        });
+        yaclickCount = 0;
+        document.getElementById('yaclick-counter').innerText = "¡Stock Apartado!";
         setTimeout(() => {
-          yaclicksCount = 0;
-          renderBarraNivel(0);
-          document.getElementById('contador-yaclicks').innerText = '0 Yaclicks';
-          document.getElementById('estado-ganador').innerText = '● LIVE EN CURSO';
-        }, 4000);
+          document.getElementById('yaclick-counter').innerText = "0 Yaclicks";
+          updateLevelBar();
+        }, 1200);
+        toggleCart();
       }
     }
 
-    const productosCatalogo = [
-      { id: 1, nombre: "Chaqueta Urban Oversized", categoria: "Moda", precio: 29990, img: "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80" },
-      { id: 2, nombre: "Smartwatch Ultra Series 9", categoria: "Tecnología", precio: 34990, img: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=500&q=80" },
-      { id: 3, nombre: "Set 6 Frascos de Vidrio", categoria: "Hogar", precio: 18990, img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=500&q=80" },
-      { id: 4, nombre: "Café Especial de Altura", categoria: "Alimentos", precio: 9990, img: "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&w=500&q=80" }
-    ];
+    function renderWeeklyGallery() {
+      const gallery = document.getElementById('weekly-gallery');
+      gallery.innerHTML = liveWindows.map(win => `
+        <button type="button" onclick="selectWindow(${win.id})" class="bg-black/40 border border-white/10 hover:border-cyan-400 rounded-xl p-1.5 text-left transition">
+          <img src="${win.img}" alt="${win.product}" class="w-full h-16 object-cover rounded-lg">
+          <p class="text-[10px] font-bold truncate mt-1">${win.product}</p>
+          <p class="text-[10px] text-cyan-400 font-extrabold">$${win.price.toLocaleString('es-CL')}</p>
+        </button>
+      `).join('');
+    }
 
-    function renderCatalogo(lista) {
-      const grid = document.getElementById('grid-productos');
-      grid.innerHTML = lista.map(p => `
-        <div class="glass rounded-2xl overflow-hidden flex flex-col justify-between">
-          <img src="${p.img}" class="h-40 w-full object-cover">
-          <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
-            <div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">${p.categoria}</span>
-              <h3 class="font-bold text-base mt-1">${p.nombre}</h3>
-              <p class="text-xs text-amber-400 font-extrabold mt-1">$${p.precio.toLocaleString('es-CL')} CLP</p>
-            </div>
-            <button onclick="agregarAlCarritoConCantidad('${p.nombre}', ${p.precio}, '${p.img}', 1)" class="w-full btn-primary py-2 rounded-xl text-xs font-bold">🛒 Agregar al Carrito</button>
+    function toggleAiAgent() {
+      aiEnabled = !aiEnabled;
+      const btn = document.getElementById('btn-ai-status');
+      if (aiEnabled) {
+        btn.className = "text-[10px] bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded-full font-bold";
+        btn.innerText = "🤖 IA: Activada";
+      } else {
+        btn.className = "text-[10px] bg-white/10 border border-white/20 text-slate-400 px-2 py-0.5 rounded-full font-bold";
+        btn.innerText = "🤖 IA: Pausada";
+      }
+    }
+
+    function sendChatMessage(event) {
+      event.preventDefault();
+      const input = document.getElementById('chat-input');
+      const chat = document.getElementById('chat-messages');
+      const messageText = input.value.trim();
+      if (!messageText) return;
+
+      chat.innerHTML += `<div class="bg-white/5 p-1.5 rounded"><strong class="text-cyan-400">Tú:</strong> ${messageText}</div>`;
+      input.value = '';
+      chat.scrollTop = chat.scrollHeight;
+
+      if (aiEnabled) {
+        setTimeout(() => {
+          chat.innerHTML += `<div class="bg-purple-900/30 border border-purple-500/30 p-1.5 rounded"><strong class="text-fuchsia-400">Agente IA Yaclick:</strong> ¡Gracias por tu consulta sobre "${activeWindow.product}"! Tenemos despacho disponible y pago protegido.</div>`;
+          chat.scrollTop = chat.scrollHeight;
+        }, 600);
+      }
+    }
+
+    function renderCatalog(list) {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = list.map(prod => `
+        <div class="glass rounded-2xl p-4 flex flex-col justify-between space-y-3">
+          <div>
+            <img src="${prod.img}" alt="${prod.name}" class="w-full h-36 object-cover rounded-xl mb-3">
+            <span class="text-[10px] text-cyan-400 font-bold uppercase">${prod.store}</span>
+            <h3 class="font-extrabold text-sm mt-0.5">${prod.name}</h3>
+            <p class="text-fuchsia-400 font-black text-base mt-1">$${prod.price.toLocaleString('es-CL')} CLP</p>
           </div>
+          <button type="button" onclick='addToCart(${JSON.stringify(prod)})' class="w-full btn-primary py-2.5 rounded-xl text-xs font-bold text-white">
+            + Agregar al Carrito
+          </button>
         </div>
       `).join('');
     }
 
-    function filtrarProductos() {
-      const q = document.getElementById('buscador-productos').value.toLowerCase();
-      const filtrados = productosCatalogo.filter(p => p.nombre.toLowerCase().includes(q));
-      renderCatalogo(filtrados);
+    function filterProducts() {
+      const query = document.getElementById('product-search').value.toLowerCase();
+      const filtered = catalogProducts.filter(prod =>
+        prod.name.toLowerCase().includes(query) || prod.store.toLowerCase().includes(query)
+      );
+      renderCatalog(filtered);
     }
 
-    function agregarAlCarritoConCantidad(nombre, precio, img, cantidadExtra) {
-      const existente = carrito.find(item => item.nombre === nombre);
-      if (existente) {
-        existente.cantidad += cantidadExtra;
+    function addToCart(product) {
+      const existing = cart.find(item => item.id === product.id);
+      if (existing) {
+        existing.quantity++;
       } else {
-        carrito.push({ nombre, precio, img, cantidad: cantidadExtra });
+        cart.push({ ...product, quantity: 1 });
       }
-      actualizarCarrito();
+      updateCartCount();
     }
 
-    function cambiarCantidad(index, delta) {
-      carrito[index].cantidad += delta;
-      if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
-      actualizarCarrito();
+    function updateCartQuantity(id, delta) {
+      const idx = cart.findIndex(item => item.id === id);
+      if (idx === -1) return;
+      cart[idx].quantity += delta;
+      if (cart[idx].quantity <= 0) {
+        cart.splice(idx, 1);
+      }
+      updateCartCount();
+      renderCart();
     }
 
-    function actualizarCarrito() {
-      const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-      document.getElementById('contador-carrito').innerText = totalItems;
-      const lista = document.getElementById('lista-carrito');
+    function updateCartCount() {
+      const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+      document.getElementById('cart-count').innerText = totalItems;
+    }
 
-      if (carrito.length === 0) {
-        lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">Tu carrito está vacío.</p>';
+    function renderCart() {
+      const list = document.getElementById('cart-items-list');
+      if (cart.length === 0) {
+        list.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">Tu carrito está vacío.</p>`;
       } else {
-        lista.innerHTML = carrito.map((item, idx) => `
-          <div class="flex items-center justify-between bg-white/5 p-2.5 rounded-xl border border-white/10">
-            <div class="flex items-center gap-2.5">
-              <img src="${item.img}" class="w-10 h-10 rounded-lg object-cover">
-              <div>
-                <p class="text-xs font-bold">${item.nombre}</p>
-                <p class="text-xs text-amber-400">$${(item.precio * item.cantidad).toLocaleString('es-CL')}</p>
-              </div>
+        list.innerHTML = cart.map(item => `
+          <div class="bg-white/5 rounded-xl p-3 flex items-center justify-between text-xs">
+            <div>
+              <p class="font-bold">${item.name}</p>
+              <p class="text-cyan-400">$${(item.price * item.quantity).toLocaleString('es-CL')}</p>
             </div>
-            <div class="flex items-center gap-2 bg-black/50 px-2 py-1 rounded-lg border border-white/10">
-              <button onclick="cambiarCantidad(${idx}, -1)" class="text-slate-300 font-bold text-xs px-1">-</button>
-              <span class="text-xs font-bold text-cyan-400">${item.cantidad}</span>
-              <button onclick="cambiarCantidad(${idx}, 1)" class="text-slate-300 font-bold text-xs px-1">+</button>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="updateCartQuantity(${item.id}, -1)" class="w-6 h-6 rounded bg-white/10 font-bold">-</button>
+              <span class="font-bold">${item.quantity}</span>
+              <button type="button" onclick="updateCartQuantity(${item.id}, 1)" class="w-6 h-6 rounded bg-white/10 font-bold">+</button>
             </div>
           </div>
         `).join('');
       }
 
-      const subtotal = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
-      const comPlat = Math.round(subtotal * 0.06);
-      const comAfil = Math.round(subtotal * 0.10);
+      const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+      const platformFee = Math.round(subtotal * 0.06);
+      const affiliateFee = Math.round(subtotal * 0.10);
 
-      document.getElementById('sub-carrito').innerText = `$${subtotal.toLocaleString('es-CL')}`;
-      document.getElementById('com-plataforma').innerText = `$${comPlat.toLocaleString('es-CL')}`;
-      document.getElementById('com-afiliado').innerText = `$${comAfil.toLocaleString('es-CL')}`;
-      document.getElementById('total-carrito').innerText = `$${subtotal.toLocaleString('es-CL')}`;
+      document.getElementById('cart-subtotal').innerText = `$${subtotal.toLocaleString('es-CL')}`;
+      document.getElementById('platform-fee').innerText = `$${platformFee.toLocaleString('es-CL')}`;
+      document.getElementById('affiliate-fee').innerText = `$${affiliateFee.toLocaleString('es-CL')}`;
+      document.getElementById('cart-total').innerText = `$${subtotal.toLocaleString('es-CL')}`;
     }
 
-    function procesarSplitPayment() {
-      if (carrito.length === 0) return alert('Agrega productos al carrito.');
-      document.getElementById('estado-whatsapp').innerText = '✅ Pago Confirmado • Split Payment Aplicado';
+    function processSplitPayment() {
+      if (cart.length === 0) {
+        alert("Agrega al menos un producto al carrito.");
+        return;
+      }
+      paymentConfirmed = true;
+      const status = document.getElementById('whatsapp-status');
       const btn = document.getElementById('btn-whatsapp');
+      status.className = "text-[11px] text-emerald-400 font-bold";
+      status.innerText = "✅ Pago Split Confirmado • WhatsApp Desbloqueado";
       btn.disabled = false;
-      btn.className = 'w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer';
-      btn.innerText = '📲 Coordinar Envío por WhatsApp Logístico ✅';
+      btn.className = "w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer transition";
+      btn.innerText = "📲 Coordinar Despacho por WhatsApp";
     }
 
-    function abrirWhatsAppLogistico() {
-      window.open('https://wa.me/?text=Hola%20Yaclick,%20pago%20confirmado%20para%20coordinar%20despacho.', '_blank');
+    function openLogisticWhatsApp() {
+      if (!paymentConfirmed) return;
+      const summary = cart.map(item => `${item.quantity}x ${item.name}`).join(', ');
+      const text = encodeURIComponent(`Hola, acabo de pagar en YACLICK.SHOP: ${summary}. Coordino mi despacho.`);
+      window.open(`https://wa.me/${activeWindow.whatsapp}?text=${text}`, '_blank');
     }
 
-    function enviarMensajeChat(e) {
-      e.preventDefault();
-      const input = document.getElementById('input-chat');
-      if (!input.value.trim()) return;
-      const box = document.getElementById('chat-mensajes');
-      box.innerHTML += `<div class="bg-white/5 p-1.5 rounded"><strong class="text-emerald-400">Tú:</strong> ${input.value}</div>`;
-      const mensajeUsuario = input.value;
-      input.value = '';
-      box.scrollTop = box.scrollHeight;
+    function openRegisterModal(role = 'comprador') {
+      document.getElementById('register-modal').classList.remove('hidden');
+      document.getElementById('register-status').innerText = '';
+      selectRole(role);
+    }
 
-      if (iaActivada) {
+    function closeRegisterModal() {
+      document.getElementById('register-modal').classList.add('hidden');
+    }
+
+    function selectRole(role) {
+      selectedRole = role;
+      ['comprador', 'seller', 'afiliado'].forEach(r => {
+        const tab = document.getElementById(`tab-${r}`);
+        if (!tab) return;
+        tab.className = r === role
+          ? "py-2 rounded-lg text-xs font-bold bg-purple-600 text-white transition"
+          : "py-2 rounded-lg text-xs font-bold bg-white/10 text-slate-300 hover:bg-white/20 transition";
+      });
+    }
+
+    async function completeRegistration(event) {
+      event.preventDefault();
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const statusEl = document.getElementById('register-status');
+      const submitBtn = document.getElementById('btn-register-submit');
+
+      submitBtn.disabled = true;
+      statusEl.className = "text-center text-xs text-cyan-300";
+      statusEl.innerText = "Guardando registro...";
+
+      try {
+        if (supabaseClient && selectedRole === 'seller') {
+          const { error } = await supabaseClient
+            .from('stores')
+            .insert([{ name: `${name} Store`, owner_name: name, email: email }]);
+          if (error) throw error;
+        }
+        statusEl.className = "text-center text-xs text-emerald-400 font-bold";
+        statusEl.innerText = `¡Registro exitoso como ${selectedRole.toUpperCase()} para ${name}!`;
+        event.target.reset();
         setTimeout(() => {
-          box.innerHTML += `<div class="bg-purple-900/30 border border-purple-500/30 p-1.5 rounded"><strong class="text-fuchsia-400">Agente IA Yaclick:</strong> ¡Hola! Entendido tu mensaje sobre "${mensajeUsuario}". La ventana está lista para gestionar tu pedido y despacho automático.</div>`;
-          box.scrollTop = box.scrollHeight;
-        }, 800);
+          closeRegisterModal();
+        }, 1200);
+      } catch (err) {
+        statusEl.className = "text-center text-xs text-red-400";
+        statusEl.innerText = "Error en el registro: " + err.message;
+      } finally {
+        submitBtn.disabled = false;
       }
     }
 
-    function mostrarSeccion(sec) {
-      ['inicio', 'catalogo', 'legal'].forEach(s => document.getElementById(`sec-${s}`).classList.add('hidden'));
-      document.getElementById(`sec-${sec}`).classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function toggleMenu() { document.getElementById('menu-navegacion').classList.toggle('hidden'); }
-    function toggleCarrito() { document.getElementById('modal-carrito').classList.toggle('hidden'); }
-    function abrirModalRegistro(rol) { document.getElementById('modal-registro').classList.remove('hidden'); }
-    function cerrarModalRegistro() { document.getElementById('modal-registro').classList.add('hidden'); }
-
-    renderBarraNivel(0);
-    renderVentanasSelector();
-    renderFotosSemana();
-    renderCatalogo(productosCatalogo);
-    actualizarCarrito();
+    document.addEventListener('DOMContentLoaded', () => {
+      renderWindows();
+      renderWeeklyGallery();
+      updateLevelBar();
+      renderCatalog(catalogProducts);
+    });
   </script>
 </body>
 </html>
