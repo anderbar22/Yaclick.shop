@@ -1,241 +1,580 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YACLICK.SHOP - Live Shopping & Split Payment</title>
-    <!-- Tailwind CSS para el diseño oscuro y moderno -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Manifest para convertirla en PWA instalable -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0a0a0f">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YACLICK.SHOP - E-commerce Live, Términos y Seguridad</title>
+  <meta name="theme-color" content="#0a0a0f">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0a0a0f; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; }
+    .glass { background: rgba(23, 23, 35, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .gradient-text { background: linear-gradient(90deg, #38bdf8, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .btn-primary { background: linear-gradient(90deg, #0284c7, #9333ea); }
+    .medidor-card { background: #000; border: 3px solid #222; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border-radius: 20px; }
+  </style>
 </head>
-<body class="min-h-screen bg-[#0a0a0f] text-white font-sans pb-24">
+<body class="min-h-screen flex flex-col">
 
-    <!-- BARRA SUPERIOR DE ANUNCIO -->
-    <div class="bg-gradient-to-r from-purple-700 via-fuchsia-600 to-cyan-500 text-[11px] font-bold text-center py-2 px-3">
-        🚀 YACLICK.SHOP • Live Shopping + Split Payment (6% Plataforma + Afiliados)
+  <!-- BARRA SUPERIOR -->
+  <div class="bg-gradient-to-r from-purple-700 via-fuchsia-600 to-cyan-600 text-white text-xs font-semibold text-center py-2 px-3">
+    🚀 YACLICK.SHOP: Ecosistema Live Commerce con Protección Legal y Split Payment
+  </div>
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 glass border-b border-white/10">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="mostrarSeccion('inicio')">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-fuchsia-600 to-cyan-500 flex items-center justify-center font-black text-white text-lg shadow-lg">Y</div>
+        <div>
+          <h1 class="font-extrabold text-lg tracking-tight gradient-text leading-none">YACLICK.SHOP</h1>
+          <p class="text-[10px] text-slate-400 tracking-widest uppercase mt-0.5">E-commerce Live</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="toggleCarrito()" class="relative p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition">
+          🛒
+          <span id="contador-carrito" class="absolute -top-1.5 -right-1.5 bg-fuchsia-600 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+        </button>
+        <button onclick="toggleMenu()" class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-lg">
+          ☰
+        </button>
+      </div>
     </div>
 
-    <!-- HEADER / NAVEGACIÓN -->
-    <header class="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-[#0f0f17] sticky top-0 z-40">
-        <div onclick="cambiarVista('home')" class="cursor-pointer">
-            <h1 class="text-xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500">
-                YACLICK.SHOP
-            </h1>
-            <p class="text-[10px] text-gray-400">Haz ventas, haz compras, haz Yaclick</p>
+    <!-- MENÚ -->
+    <nav id="menu-navegacion" class="hidden border-t border-white/10 bg-[#0f0f18] px-4 py-3 space-y-2">
+      <button onclick="mostrarSeccion('inicio'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium">🏪 Windows Live Shopping</button>
+      <button onclick="cambiarModoTransmision('LIVE'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium text-cyan-400">🔴 Opción 1: Live en Vivo (Real)</button>
+      <button onclick="cambiarModoTransmision('SIMULIVE'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium text-purple-400">📼 Opción 2: Simulive (Bucle 6h)</button>
+      <button onclick="mostrarSeccion('catalogo'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium">🔍 Explorar Catálogo</button>
+      <button onclick="mostrarSeccion('legal'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/5 flex items-center gap-3 text-sm font-medium">🛡️ Términos, Condiciones y Legal</button>
+      <button onclick="abrirModalRegistro('comprador'); toggleMenu()" class="w-full text-left px-3 py-2.5 rounded-lg bg-purple-600/20 border border-purple-500/40 text-purple-300 flex items-center gap-3 text-sm font-semibold">👤 Ingresar / Registro</button>
+    </nav>
+  </header>
+
+  <!-- CONTENIDO -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 space-y-8">
+
+    <!-- SECCIÓN INICIO: WINDOWS LIVE SHOPPING -->
+    <section id="sec-inicio" class="space-y-8">
+      
+      <div class="glass rounded-2xl p-6 text-center space-y-3">
+        <div class="flex justify-center items-center gap-2">
+          <span id="badge-modo-actual" class="inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30">
+            🔴 MODO: LIVE EN VIVO
+          </span>
+          <span class="inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+            ⏰ Simulive Bucle: 6 Horas
+          </span>
         </div>
-        <button onclick="cambiarVista('carrito')" class="relative bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded-xl text-sm font-semibold border border-cyan-500/30">
-            🛒 Carrito <span id="badge-carrito" class="ml-1 bg-fuchsia-600 text-white text-xs px-2 py-0.5 rounded-full">0</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold leading-tight">
+          Windows Live Shopping con <span class="text-cyan-400">Level Yaclick & IA</span>
+        </h2>
+      </div>
+
+      <!-- BANNER PUBLICITARIO (1 MINUTO) -->
+      <div id="banner-publicidad" class="hidden glass border-2 border-amber-500/60 rounded-2xl p-5 text-center space-y-3 bg-gradient-to-r from-amber-950/40 via-purple-950/40 to-slate-950/40">
+        <div class="flex justify-between items-center">
+          <span class="bg-amber-500 text-black text-[10px] font-black px-2.5 py-1 rounded uppercase tracking-widest">📢 Publicidad Comercial (1 Min)</span>
+          <span id="contador-publi" class="text-xs text-amber-300 font-bold">Espacio de Grandes Marcas</span>
+        </div>
+        <div class="py-4">
+          <h3 class="text-xl font-extrabold text-amber-400">¡Arrienda este espacio publicitario de alta conversión!</h3>
+          <p class="text-xs text-slate-300 mt-1">Impacta a miles de compradores en nuestra rotación comercial de Simulive.</p>
+        </div>
+        <button onclick="cerrarPublicidad()" class="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-black uppercase tracking-wider">Saltar Publicidad en <span id="segundos-publi">60</span>s ⏭️</button>
+      </div>
+
+      <!-- SELECCIÓN DE VENTANAS LIVE -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300">Selecciona tu Ventana de Transmisión</h3>
+          <button onclick="activarPublicidadComercial()" class="text-xs bg-amber-500/20 border border-amber-500/40 text-amber-300 px-3 py-1 rounded-lg font-bold">📺 Ver Espacio Publicitario (1 min)</button>
+        </div>
+        <div id="grid-ventanas-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+      </div>
+
+      <!-- WIDGET PRINCIPAL: LEVEL YACLICK -->
+      <div class="grid md:grid-cols-12 gap-6 items-center">
+        
+        <!-- PANEL IZQUIERDO / CENTRAL: INDICADOR LEVEL YACLICK -->
+        <div class="md:col-span-8 medidor-card p-5 text-center relative space-y-4">
+          <div>
+            <h3 id="titulo-ventana-activo" class="text-xs font-bold text-slate-400 tracking-widest uppercase">Ventana #01 • Moda & Estilo SpA</h3>
+            <h2 class="text-2xl md:text-3xl font-black text-cyan-400 tracking-wider mt-1 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]">LEVEL YACLICK</h2>
+            <p class="text-[11px] text-fuchsia-400 font-bold uppercase tracking-widest mt-0.5">INDICADOR DE OPORTUNIDAD EN VIVO</p>
+          </div>
+
+          <!-- PANTALLA Y BARRA MULTICOLOR -->
+          <div class="flex items-center justify-center gap-4 bg-gradient-to-b from-[#0a0a0f] to-[#12121f] p-4 rounded-xl border border-white/10 relative min-h-[260px]">
+            
+            <div id="barra-nivel-colores" class="w-6 h-52 bg-black border border-white/20 rounded-lg p-1 flex flex-col-reverse justify-between gap-1 shadow-inner"></div>
+
+            <div class="flex-1 bg-black/90 border-2 border-cyan-500/40 rounded-xl p-3 flex flex-col items-center justify-center relative overflow-hidden h-52">
+              <span id="estado-ganador" class="absolute top-2 text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded-full animate-pulse">● LIVE EN CURSO</span>
+              
+              <div class="my-auto relative group">
+                <img id="img-producto-activo" src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=400&q=80" class="w-28 h-28 object-cover rounded-xl border-2 border-fuchsia-500 shadow-xl">
+              </div>
+
+              <div class="w-full text-center mt-1">
+                <h4 id="nombre-producto-activo" class="font-extrabold text-xs text-white truncate">Chaqueta Urban Oversized</h4>
+                <p id="precio-producto-activo" class="text-cyan-400 font-extrabold text-sm">$29.990 CLP</p>
+              </div>
+            </div>
+
+            <div class="hidden sm:flex flex-col justify-between h-52 text-[9px] font-black tracking-widest text-cyan-300 uppercase py-1 text-right">
+              <span>RELIABLE</span>
+              <span>ACCURATE</span>
+              <span>REUSABLE</span>
+            </div>
+          </div>
+
+          <!-- BOTÓN YACLEA Y COMPRA -->
+          <div class="pt-2">
+            <button onclick="darYaclick()" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 via-fuchsia-600 to-purple-600 hover:scale-[1.02] active:scale-95 transition font-black text-sm md:text-base text-white shadow-2xl border border-white/30 uppercase tracking-widest flex items-center justify-center gap-2">
+              <span>⚡ Yaclea y Compra</span>
+              <span id="contador-yaclicks" class="bg-black/50 px-3 py-1 rounded-lg text-xs">0 Yaclicks</span>
+            </button>
+            <p class="text-[11px] text-slate-400 mt-2">¡Haz clic repetidamente para llenar el nivel Level Yaclick y apartar el stock!</p>
+          </div>
+        </div>
+
+        <!-- PANEL DERECHO: FOTOS DE LA SEMANA & CHAT CON IA -->
+        <div class="md:col-span-4 space-y-4">
+          <div class="glass rounded-2xl p-4 space-y-3">
+            <h4 class="font-bold text-xs text-slate-300 flex items-center justify-between">
+              <span>📸 Productos de la Semana</span>
+              <span class="text-[10px] text-cyan-400">Selecciona</span>
+            </h4>
+            <div id="galeria-semana" class="grid grid-cols-2 gap-2"></div>
+          </div>
+
+          <div class="glass rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="font-bold text-xs text-slate-300 flex items-center gap-1.5">
+                <span>💬 Chat en Vivo</span>
+              </h4>
+              <button onclick="toggleAgenteIA()" id="btn-estado-ia" class="text-[10px] bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded-full font-bold">🤖 IA: Activada</button>
+            </div>
+            <div id="chat-mensajes" class="h-28 overflow-y-auto space-y-2 text-xs pr-1 bg-black/40 p-2 rounded-xl">
+              <div class="bg-white/5 p-1.5 rounded"><strong class="text-cyan-400">Carlos R.:</strong> ¿Tienen stock disponible?</div>
+              <div class="bg-purple-900/30 border border-purple-500/30 p-1.5 rounded"><strong class="text-fuchsia-400">Agente IA Yaclick:</strong> ¡Hola Carlos! Sí, la ventana cuenta con stock verificado.</div>
+            </div>
+            <form onsubmit="enviarMensajeChat(event)" class="flex gap-2">
+              <input id="input-chat" type="text" placeholder="Escribe tu consulta..." class="flex-1 bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-cyan-500">
+              <button type="submit" class="btn-primary px-3 py-1.5 rounded-xl text-xs font-bold">Enviar</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN CATÁLOGO -->
+    <section id="sec-catalogo" class="hidden space-y-5">
+      <div class="glass rounded-2xl p-5 space-y-3">
+        <h2 class="text-xl font-extrabold">🛍️ Catálogo Global con Split Payment</h2>
+        <p class="text-xs text-slate-400">Selecciona la cantidad exacta de productos que deseas comprar.</p>
+        <input id="buscador-productos" oninput="filtrarProductos()" type="text" placeholder="Buscar por nombre..." class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-500">
+      </div>
+      <div id="grid-productos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- SECCIÓN TÉRMINOS, CONDICIONES Y RESPONSABILIDADES -->
+    <section id="sec-legal" class="hidden space-y-5">
+      <div class="glass rounded-2xl p-6 space-y-6">
+        <h2 class="text-xl font-extrabold text-cyan-400">🛡️ Términos, Condiciones y Marco Legal de YACLICK.SHOP</h2>
+        <p class="text-xs text-slate-300">Bienvenido a YACLICK.SHOP. Al utilizar nuestra plataforma de Live Commerce, Windows Live Shopping y sistemas de gamificación, usted acepta de manera expresa los siguientes términos de responsabilidad y seguridad operativa.</p>
+        
+        <div class="space-y-4 text-xs text-slate-300">
+          <div class="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
+            <h3 class="font-extrabold text-sm text-cyan-300">1. Naturaleza de la Plataforma e Intermediación</h3>
+            <p>YACLICK.SHOP actúa estrictamente como una plataforma tecnológica intermediaria que facilita la interacción comercial mediante transmisiones en vivo, el sistema de turnos <strong>Level Yaclick</strong>, pasarelas de pago divididas (*Split Payment*) y coordinación logística vía WhatsApp.</p>
+          </div>
+
+          <div class="bg-red-950/30 border border-red-500/40 rounded-xl p-4 space-y-2">
+            <h3 class="font-extrabold text-sm text-red-400">2. Responsabilidades Individuales de los Vendedores y Afiliados</h3>
+            <p>Cada comerciante, proveedor o vendedor independiente que opera una ventana en YACLICK.SHOP es <strong>único y exclusivo responsable</strong> de:</p>
+            <ul class="list-disc pl-5 space-y-1 text-slate-200">
+              <li>La legalidad, origen, veracidad, calidad y estado de los productos ofrecidos.</li>
+              <li>El cumplimiento de las normativas sanitarias, fiscales y comerciales vigentes en su localidad.</li>
+              <li>La exactitud de los precios, descripciones y el cumplimiento oportuno de los despachos coordinados con los compradores. YACLICK.SHOP no asume responsabilidad directa por incumplimientos logísticos ajenos a la plataforma tecnológica.</li>
+            </ul>
+          </div>
+
+          <div class="bg-red-950/40 border border-red-600/60 rounded-xl p-4 space-y-2">
+            <h3 class="font-extrabold text-sm text-red-300">3. Prohibición Absoluta de Ventas Ilícitas y Sanciones</h3>
+            <p><strong>Las ventas ilícitas están terminantemente prohibidas en YACLICK.SHOP.</strong> Se prohíbe la comercialización de artículos falsificados, sustancias controladas, armas, productos de contrabando, bienes robados o cualquier servicio que vulnere el ordenamiento jurídico.</p>
+            <p class="font-bold text-amber-300 mt-1">Cualquier intento de venta ilícita detectado por nuestros sistemas o reportado por la comunidad conllevará la suspensión inmediata e irreversible de la cuenta, la retención de fondos asociados y la denuncia formal ante las autoridades competentes, aportando toda la trazabilidad y datos de registro disponibles para el inicio de acciones legales.</p>
+          </div>
+
+          <div class="bg-purple-950/30 border border-purple-500/30 rounded-xl p-4 space-y-2">
+            <h3 class="font-extrabold text-sm text-purple-300">4. Arriendo de Espacios Publicitarios (Simulive 6h)</h3>
+            <p>Los espacios de publicidad comercial de 1 minuto que se reproducen durante las pausas de los ciclos de Simulive son propiedad de YACLICK.SHOP. Las empresas interesadas en su arriendo deben sujetarse a las políticas de contenido apto para todo público y a los contratos comerciales formalizados.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL CARRITO -->
+  <div id="modal-carrito" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end">
+    <div class="w-full max-w-md bg-[#0f0f18] h-full p-5 flex flex-col justify-between border-l border-white/10 overflow-y-auto">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <h3 class="font-extrabold text-base">🛒 Tu Carrito & Split Payment</h3>
+          <button onclick="toggleCarrito()" class="text-slate-400 hover:text-white text-xl">✕</button>
+        </div>
+        <div id="lista-carrito" class="space-y-3 max-h-60 overflow-y-auto"></div>
+      </div>
+
+      <div class="space-y-3 border-t border-white/10 pt-4">
+        <div class="bg-white/5 rounded-xl p-3 space-y-1.5 text-xs">
+          <div class="flex justify-between"><span>Subtotal:</span><span id="sub-carrito" class="font-bold">$0</span></div>
+          <div class="flex justify-between text-fuchsia-400"><span>Comisión Plataforma (6%):</span><span id="com-plataforma">$0</span></div>
+          <div class="flex justify-between text-cyan-400"><span>Comisión Afiliado (10%):</span><span id="com-afiliado">$0</span></div>
+          <div class="flex justify-between text-sm font-extrabold border-t border-white/10 pt-2 mt-1"><span>Total a Pagar:</span><span id="total-carrito" class="text-emerald-400">$0</span></div>
+        </div>
+
+        <button onclick="procesarSplitPayment()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm transition">
+          💳 Pagar con Split Payment Seguro
         </button>
-    </header>
 
-    <!-- VISTA 1: HOME & SALAS EN VIVO -->
-    <main id="vista-home" class="p-4 max-w-md mx-auto space-y-5">
-        <div class="grid grid-cols-2 gap-3">
-            <button onclick="cambiarVista('home')" class="bg-gradient-to-r from-cyan-500 to-blue-600 py-3 rounded-xl font-bold text-sm shadow-lg">🛍️ Explorar Live</button>
-            <button onclick="alert('Panel de Vendedor: Próximamente integración con pasarela de pagos y alta de tiendas chilenas e internacionales.')" class="bg-[#181826] border border-fuchsia-500/50 py-3 rounded-xl font-bold text-sm text-fuchsia-300">🏪 Ser Vendedor</button>
+        <div id="bloque-whatsapp" class="bg-slate-900 border border-white/10 rounded-xl p-3 text-center space-y-2">
+          <p id="estado-whatsapp" class="text-[11px] text-amber-400">🔒 WhatsApp Logístico Protegido</p>
+          <button id="btn-whatsapp" disabled onclick="abrirWhatsAppLogistico()" class="w-full py-2.5 rounded-lg bg-white/10 text-slate-500 text-xs font-bold cursor-not-allowed">
+            Se desbloqueará al confirmar el pago
+          </button>
         </div>
+      </div>
+    </div>
+  </div>
 
-        <div class="space-y-3">
-            <h2 class="text-base font-bold flex items-center justify-between">
-                <span>Creadores & Tiendas en Live</span>
-                <span class="text-xs text-red-500 font-semibold animate-pulse">● EN VIVO</span>
-            </h2>
-            <div id="contenedor-salas" class="space-y-3">
-                <!-- Se llena mediante JavaScript -->
+  <!-- MODAL REGISTRO -->
+  <div id="modal-registro" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass w-full max-w-md rounded-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-extrabold text-lg">Registro en YACLICK.SHOP</h3>
+        <button onclick="cerrarModalRegistro()" class="text-slate-400 hover:text-white text-xl">✕</button>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <button onclick="seleccionarRol('comprador')" id="tab-comprador" class="py-2 rounded-lg text-xs font-bold bg-purple-600 text-white">Comprador</button>
+        <button onclick="seleccionarRol('vendedor')" id="tab-vendedor" class="py-2 rounded-lg text-xs font-bold bg-white/10 text-slate-300">Vendedor</button>
+        <button onclick="seleccionarRol('afiliado')" id="tab-afiliado" class="py-2 rounded-lg text-xs font-bold bg-white/10 text-slate-300">Afiliado</button>
+      </div>
+      <form onsubmit="completarRegistro(event)" class="space-y-3">
+        <div>
+          <label class="text-xs text-slate-300">Nombre / Razón Social</label>
+          <input required type="text" placeholder="Tu nombre" class="w-full mt-1 bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs">
+        </div>
+        <div>
+          <label class="text-xs text-slate-300">Correo Electrónico</label>
+          <input required type="email" placeholder="correo@ejemplo.com" class="w-full mt-1 bg-black/50 border border-white/15 rounded-xl px-3 py-2 text-xs">
+        </div>
+        <button type="submit" class="w-full btn-primary py-3 rounded-xl font-bold text-sm">Registrarse</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let ventanasLive = [
+      { id: 1, titulo: "Ventana #01 • Moda & Estilo SpA", producto: "Chaqueta Urban Oversized", precio: 29990, img: "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80", fotosSemana: [
+        "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=300&q=80"
+      ]},
+      { id: 2, titulo: "Ventana #02 • Tech Gadgets Chile", producto: "Smartwatch Ultra Series 9", precio: 34990, img: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=500&q=80", fotosSemana: [
+        "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=300&q=80"
+      ]},
+      { id: 3, titulo: "Ventana #03 • Hogar & Confort", producto: "Set 6 Frascos de Vidrio", precio: 18990, img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=500&q=80", fotosSemana: [
+        "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=300&q=80"
+      ]},
+      { id: 4, titulo: "Ventana #04 • Café 3-6-9 T Gourmet", producto: "Café Especial de Altura", precio: 9990, img: "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&w=500&q=80", fotosSemana: [
+        "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=300&q=80",
+        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=300&q=80"
+      ]}
+    ];
+
+    let ventanaActual = ventanasLive[0];
+    let yaclicksCount = 0;
+    let carrito = [];
+    let iaActivada = true;
+    let modoTransmision = 'LIVE';
+    let segundosPubli = 60;
+    let timerPubli = null;
+
+    const coloresBarra = [
+      '#ef4444', '#ef4444', '#f97316', '#f97316', 
+      '#eab308', '#eab308', '#84cc16', '#84cc16', 
+      '#10b981', '#10b981', '#06b6d4', '#38bdf8'
+    ];
+
+    function renderBarraNivel(nivel) {
+      const cont = document.getElementById('barra-nivel-colores');
+      const totalBloques = coloresBarra.length;
+      const bloquesActivos = Math.round((nivel / 100) * totalBloques);
+
+      let html = '';
+      for (let i = 0; i < totalBloques; i++) {
+        const activo = i < bloquesActivos;
+        const color = coloresBarra[i];
+        const estilo = activo ? `background-color: ${color}; box-shadow: 0 0 8px ${color};` : 'background-color: #1a1a24; opacity: 0.3;';
+        html += `<div class="w-full flex-1 rounded-sm transition-all duration-150" style="${estilo}"></div>`;
+      }
+      cont.innerHTML = html;
+    }
+
+    function renderVentanasSelector() {
+      const cont = document.getElementById('grid-ventanas-selector');
+      cont.innerHTML = ventanasLive.map(v => `
+        <button onclick="seleccionarVentana(${v.id})" class="p-3 rounded-xl border text-left transition ${v.id === ventanaActual.id ? 'bg-cyan-500/20 border-cyan-500 text-cyan-300' : 'glass border-white/10 hover:border-white/30 text-slate-300'}">
+          <span class="text-[10px] font-bold block opacity-70">Ventana #0${v.id}</span>
+          <p class="font-bold text-xs truncate mt-0.5">${v.titulo.split('•')[1] || v.titulo}</p>
+        </button>
+      `).join('');
+    }
+
+    function seleccionarVentana(id) {
+      const v = ventanasLive.find(item => item.id === id);
+      if (v) {
+        ventanaActual = v;
+        yaclicksCount = 0;
+        renderBarraNivel(0);
+        document.getElementById('contador-yaclicks').innerText = '0 Yaclicks';
+        document.getElementById('titulo-ventana-activo').innerText = v.titulo;
+        document.getElementById('img-producto-activo').src = v.img;
+        document.getElementById('nombre-producto-activo').innerText = v.producto;
+        document.getElementById('precio-producto-activo').innerText = `$${v.precio.toLocaleString('es-CL')} CLP`;
+        renderVentanasSelector();
+        renderFotosSemana();
+      }
+    }
+
+    function renderFotosSemana() {
+      const cont = document.getElementById('galeria-semana');
+      cont.innerHTML = ventanaActual.fotosSemana.map((foto, idx) => `
+        <div onclick="cambiarFotoActiva('${foto}')" class="h-20 rounded-xl overflow-hidden border border-white/20 cursor-pointer hover:border-cyan-400 transition relative">
+          <img src="${foto}" class="w-full h-full object-cover">
+          <span class="absolute bottom-1 right-1 bg-black/70 text-[9px] px-1.5 rounded text-white">Ver</span>
+        </div>
+      `).join('');
+    }
+
+    function cambiarFotoActiva(url) {
+      ventanaActual.img = url;
+      document.getElementById('img-producto-activo').src = url;
+      yaclicksCount = 0;
+      renderBarraNivel(0);
+      document.getElementById('contador-yaclicks').innerText = '0 Yaclicks';
+    }
+
+    function cambiarModoTransmision(modo) {
+      modoTransmision = modo;
+      const badge = document.getElementById('badge-modo-actual');
+      if (modo === 'LIVE') {
+        badge.innerText = '🔴 MODO: LIVE EN VIVO (Real)';
+        badge.className = 'inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30';
+      } else {
+        badge.innerText = '📼 MODO: SIMULIVE (Bucle 6h)';
+        badge.className = 'inline-block text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30';
+        activarPublicidadComercial();
+      }
+    }
+
+    function activarPublicidadComercial() {
+      const pub = document.getElementById('banner-publicidad');
+      pub.classList.remove('hidden');
+      segundosPubli = 60;
+      document.getElementById('segundos-publi').innerText = segundosPubli;
+      if (timerPubli) clearInterval(timerPubli);
+      timerPubli = setInterval(() => {
+        segundosPubli--;
+        document.getElementById('segundos-publi').innerText = segundosPubli;
+        if (segundosPubli <= 0) {
+          cerrarPublicidad();
+        }
+      }, 1000);
+    }
+
+    function cerrarPublicidad() {
+      document.getElementById('banner-publicidad').classList.add('hidden');
+      if (timerPubli) clearInterval(timerPubli);
+    }
+
+    function toggleAgenteIA() {
+      iaActivada = !iaActivada;
+      const btn = document.getElementById('btn-estado-ia');
+      if (iaActivada) {
+        btn.innerText = '🤖 IA: Activada';
+        btn.className = 'text-[10px] bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded-full font-bold';
+      } else {
+        btn.innerText = '👤 IA: Desactivada (Manual)';
+        btn.className = 'text-[10px] bg-amber-500/20 border border-amber-500/40 text-amber-300 px-2 py-0.5 rounded-full font-bold';
+      }
+    }
+
+    function darYaclick() {
+      yaclicksCount += 20;
+      if (yaclicksCount > 100) yaclicksCount = 100;
+
+      renderBarraNivel(yaclicksCount);
+      document.getElementById('contador-yaclicks').innerText = `${yaclicksCount}% Yaclicks`;
+
+      if (yaclicksCount === 100) {
+        document.getElementById('estado-ganador').innerText = '🎉 ¡GANASTE TU TURNO DE COMPRA!';
+        agregarAlCarritoConCantidad(ventanaActual.producto, ventanaActual.precio, ventanaActual.img, 1);
+        alert(`🏆 ¡Felicidades! Has completado el Level Yaclick para "${ventanaActual.producto}". Añadido al carrito con Split Payment.`);
+        setTimeout(() => {
+          yaclicksCount = 0;
+          renderBarraNivel(0);
+          document.getElementById('contador-yaclicks').innerText = '0 Yaclicks';
+          document.getElementById('estado-ganador').innerText = '● LIVE EN CURSO';
+        }, 4000);
+      }
+    }
+
+    const productosCatalogo = [
+      { id: 1, nombre: "Chaqueta Urban Oversized", categoria: "Moda", precio: 29990, img: "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80" },
+      { id: 2, nombre: "Smartwatch Ultra Series 9", categoria: "Tecnología", precio: 34990, img: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=500&q=80" },
+      { id: 3, nombre: "Set 6 Frascos de Vidrio", categoria: "Hogar", precio: 18990, img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=500&q=80" },
+      { id: 4, nombre: "Café Especial de Altura", categoria: "Alimentos", precio: 9990, img: "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&w=500&q=80" }
+    ];
+
+    function renderCatalogo(lista) {
+      const grid = document.getElementById('grid-productos');
+      grid.innerHTML = lista.map(p => `
+        <div class="glass rounded-2xl overflow-hidden flex flex-col justify-between">
+          <img src="${p.img}" class="h-40 w-full object-cover">
+          <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
+            <div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">${p.categoria}</span>
+              <h3 class="font-bold text-base mt-1">${p.nombre}</h3>
+              <p class="text-xs text-amber-400 font-extrabold mt-1">$${p.precio.toLocaleString('es-CL')} CLP</p>
             </div>
+            <button onclick="agregarAlCarritoConCantidad('${p.nombre}', ${p.precio}, '${p.img}', 1)" class="w-full btn-primary py-2 rounded-xl text-xs font-bold">🛒 Agregar al Carrito</button>
+          </div>
         </div>
-    </main>
+      `).join('');
+    }
 
-    <!-- VISTA 2: SALA INTERACTIVA & CHAT DUAL -->
-    <main id="vista-sala" class="p-4 max-w-md mx-auto space-y-4 hidden">
-        <button onclick="cambiarVista('home')" class="text-cyan-400 text-sm font-semibold">← Volver a tiendas</button>
-        <div id="reproductor-sala" class="relative rounded-2xl overflow-hidden border border-fuchsia-500/40 bg-black aspect-[9/14] max-h-[360px] flex flex-col justify-between p-3">
-            <!-- Dinámico -->
-        </div>
-        <!-- Chat Dual & IA -->
-        <div class="bg-[#141420] p-3 rounded-2xl border border-gray-800 space-y-2">
-            <div class="flex justify-between items-center text-xs text-gray-400 border-b border-gray-800 pb-2">
-                <span>💬 Chat en Vivo (Modo Dueño / IA)</span>
-                <span class="text-cyan-400 font-bold">Activo 24/7</span>
+    function filtrarProductos() {
+      const q = document.getElementById('buscador-productos').value.toLowerCase();
+      const filtrados = productosCatalogo.filter(p => p.nombre.toLowerCase().includes(q));
+      renderCatalogo(filtrados);
+    }
+
+    function agregarAlCarritoConCantidad(nombre, precio, img, cantidadExtra) {
+      const existente = carrito.find(item => item.nombre === nombre);
+      if (existente) {
+        existente.cantidad += cantidadExtra;
+      } else {
+        carrito.push({ nombre, precio, img, cantidad: cantidadExtra });
+      }
+      actualizarCarrito();
+    }
+
+    function cambiarCantidad(index, delta) {
+      carrito[index].cantidad += delta;
+      if (carrito[index].cantidad <= 0) carrito.splice(index, 1);
+      actualizarCarrito();
+    }
+
+    function actualizarCarrito() {
+      const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+      document.getElementById('contador-carrito').innerText = totalItems;
+      const lista = document.getElementById('lista-carrito');
+
+      if (carrito.length === 0) {
+        lista.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">Tu carrito está vacío.</p>';
+      } else {
+        lista.innerHTML = carrito.map((item, idx) => `
+          <div class="flex items-center justify-between bg-white/5 p-2.5 rounded-xl border border-white/10">
+            <div class="flex items-center gap-2.5">
+              <img src="${item.img}" class="w-10 h-10 rounded-lg object-cover">
+              <div>
+                <p class="text-xs font-bold">${item.nombre}</p>
+                <p class="text-xs text-amber-400">$${(item.precio * item.cantidad).toLocaleString('es-CL')}</p>
+              </div>
             </div>
-            <div id="caja-chat" class="h-24 overflow-y-auto space-y-1 text-xs text-gray-300">
-                <p><strong class="text-fuchsia-400">Agente IA Yaclick:</strong> ¡Hola! Pregunta por tallas, envíos a todo Chile o stock internacional.</p>
+            <div class="flex items-center gap-2 bg-black/50 px-2 py-1 rounded-lg border border-white/10">
+              <button onclick="cambiarCantidad(${idx}, -1)" class="text-slate-300 font-bold text-xs px-1">-</button>
+              <span class="text-xs font-bold text-cyan-400">${item.cantidad}</span>
+              <button onclick="cambiarCantidad(${idx}, 1)" class="text-slate-300 font-bold text-xs px-1">+</button>
             </div>
-            <div class="flex gap-2">
-                <input type="text" id="input-chat" placeholder="Escribe tu consulta..." class="bg-black/50 border border-gray-800 text-xs rounded-lg px-3 py-2 w-full text-white focus:outline-none focus:border-cyan-400">
-                <button onclick="enviarMensajeChat()" class="bg-cyan-500 text-black text-xs font-bold px-3 py-2 rounded-lg">Enviar</button>
-            </div>
-        </div>
-    </main>
+          </div>
+        `).join('');
+      }
 
-    <!-- VISTA 3: CARRITO Y SPLIT PAYMENT AUTOMÁTICO -->
-    <main id="vista-carrito" class="p-4 max-w-md mx-auto space-y-4 hidden">
-        <button onclick="cambiarVista('home')" class="text-cyan-400 text-sm mb-2 inline-block">← Seguir comprando</button>
-        <h2 class="text-lg font-bold">Tu Carrito & Split Payment</h2>
-        <div id="resumen-carrito" class="space-y-3">
-            <!-- Dinámico -->
-        </div>
-    </main>
+      const subtotal = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+      const comPlat = Math.round(subtotal * 0.06);
+      const comAfil = Math.round(subtotal * 0.10);
 
-    <!-- SCRIPT DE FUNCIONAMIENTO E INTERACTIVIDAD -->
-    <script>
-        const salasEnVivo = [
-            {
-                id: 1,
-                tienda: "Camila Rossi - Moda & Estilo SpA",
-                titulo: "Liquidación Chaquetas Urban Oversized 🔥",
-                espectadores: 512,
-                modo: "SIMULIVE 24/7",
-                producto: "Chaqueta Cortaviento Neón Pro",
-                precio: 34990,
-                comisionAfiliado: 10,
-                imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&q=80"
-            },
-            {
-                id: 2,
-                tienda: "Mateo - Tech Gadgets Chile",
-                titulo: "Audífonos Inalámbricos ANC con Envíos a Lo Prado",
-                espectadores: 384,
-                modo: "LIVE REAL",
-                producto: "Audífonos Pro ANC Black Edition",
-                precio: 29990,
-                comisionAfiliado: 8,
-                imagen: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80"
-            }
-        ];
+      document.getElementById('sub-carrito').innerText = `$${subtotal.toLocaleString('es-CL')}`;
+      document.getElementById('com-plataforma').innerText = `$${comPlat.toLocaleString('es-CL')}`;
+      document.getElementById('com-afiliado').innerText = `$${comAfil.toLocaleString('es-CL')}`;
+      document.getElementById('total-carrito').innerText = `$${subtotal.toLocaleString('es-CL')}`;
+    }
 
-        let carrito = [];
-        let salaActual = null;
+    function procesarSplitPayment() {
+      if (carrito.length === 0) return alert('Agrega productos al carrito.');
+      document.getElementById('estado-whatsapp').innerText = '✅ Pago Confirmado • Split Payment Aplicado';
+      const btn = document.getElementById('btn-whatsapp');
+      btn.disabled = false;
+      btn.className = 'w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer';
+      btn.innerText = '📲 Coordinar Envío por WhatsApp Logístico ✅';
+    }
 
-        function renderSalas() {
-            const contenedor = document.getElementById("contenedor-salas");
-            contenedor.innerHTML = salasEnVivo.map(sala => `
-                <div onclick="abrirSala(${sala.id})" class="bg-[#141420] rounded-2xl overflow-hidden border border-gray-800 cursor-pointer p-3 hover:border-cyan-500/50 transition-all">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-cyan-400 font-semibold">${sala.tienda}</span>
-                        <span class="bg-red-600/80 text-[10px] text-white px-2 py-0.5 rounded-full font-bold">${sala.modo}</span>
-                    </div>
-                    <h3 class="font-bold text-sm">${sala.titulo}</h3>
-                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-gray-800/80">
-                        <span class="text-fuchsia-400 text-sm font-black">$${sala.precio.toLocaleString("es-CL")} CLP</span>
-                        <span class="text-[10px] text-gray-400">👁️ ${sala.espectadores} viendo</span>
-                    </div>
-                </div>
-            `).join('');
-        }
+    function abrirWhatsAppLogistico() {
+      window.open('https://wa.me/?text=Hola%20Yaclick,%20pago%20confirmado%20para%20coordinar%20despacho.', '_blank');
+    }
 
-        function abrirSala(id) {
-            salaActual = salasEnVivo.find(s => s.id === id);
-            document.getElementById("reproductor-sala").innerHTML = `
-                <img src="${salaActual.imagen}" class="absolute inset-0 w-full h-full object-cover opacity-60">
-                <div class="relative z-10 flex justify-between items-center">
-                    <span class="bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">● ${salaActual.modo}</span>
-                    <span class="bg-black/70 text-xs px-2.5 py-1 rounded-full">👁️ ${salaActual.espectadores} espectadores</span>
-                </div>
-                <div class="relative z-10 bg-[#12121c]/95 backdrop-blur-md p-3 rounded-xl border border-cyan-400/40 flex justify-between items-center">
-                    <div>
-                        <h3 class="font-bold text-xs">${salaActual.producto}</h3>
-                        <p class="text-sm font-black text-cyan-400">$${salaActual.precio.toLocaleString("es-CL")} CLP</p>
-                    </div>
-                    <button onclick="agregarAlCarrito()" class="bg-gradient-to-r from-cyan-500 to-fuchsia-600 text-xs font-bold px-3 py-2 rounded-lg shadow">
-                        Comprar
-                    </button>
-                </div>
-            `;
-            cambiarVista('sala');
-        }
+    function enviarMensajeChat(e) {
+      e.preventDefault();
+      const input = document.getElementById('input-chat');
+      if (!input.value.trim()) return;
+      const box = document.getElementById('chat-mensajes');
+      box.innerHTML += `<div class="bg-white/5 p-1.5 rounded"><strong class="text-emerald-400">Tú:</strong> ${input.value}</div>`;
+      const mensajeUsuario = input.value;
+      input.value = '';
+      box.scrollTop = box.scrollHeight;
 
-        function agregarAlCarrito() {
-            carrito.push(salaActual);
-            document.getElementById("badge-carrito").innerText = carrito.length;
-            alert(`¡Agregado al carrito con éxito!`);
-            cambiarVista('carrito');
-        }
+      if (iaActivada) {
+        setTimeout(() => {
+          box.innerHTML += `<div class="bg-purple-900/30 border border-purple-500/30 p-1.5 rounded"><strong class="text-fuchsia-400">Agente IA Yaclick:</strong> ¡Hola! Entendido tu mensaje sobre "${mensajeUsuario}". La ventana está lista para gestionar tu pedido y despacho automático.</div>`;
+          box.scrollTop = box.scrollHeight;
+        }, 800);
+      }
+    }
 
-        function cambiarVista(vista) {
-            document.getElementById("vista-home").classList.add("hidden");
-            document.getElementById("vista-sala").classList.add("hidden");
-            document.getElementById("vista-carrito").classList.add("hidden");
+    function mostrarSeccion(sec) {
+      ['inicio', 'catalogo', 'legal'].forEach(s => document.getElementById(`sec-${s}`).classList.add('hidden'));
+      document.getElementById(`sec-${sec}`).classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-            if (vista === 'home') document.getElementById("vista-home").classList.remove("hidden");
-            if (vista === 'sala') document.getElementById("vista-sala").classList.remove("hidden");
-            if (vista === 'carrito') {
-                document.getElementById("vista-carrito").classList.remove("hidden");
-                renderCarrito();
-            }
-        }
+    function toggleMenu() { document.getElementById('menu-navegacion').classList.toggle('hidden'); }
+    function toggleCarrito() { document.getElementById('modal-carrito').classList.toggle('hidden'); }
+    function abrirModalRegistro(rol) { document.getElementById('modal-registro').classList.remove('hidden'); }
+    function cerrarModalRegistro() { document.getElementById('modal-registro').classList.add('hidden'); }
 
-        function renderCarrito() {
-            const cont = document.getElementById("resumen-carrito");
-            if (carrito.length === 0) {
-                cont.innerHTML = `<div class="bg-[#141420] p-6 rounded-2xl text-center text-gray-400 border border-gray-800">Tu carrito está vacío.</div>`;
-                return;
-            }
-
-            let subtotal = carrito.reduce((acc, item) => acc + item.precio, 0);
-            let comisionPlataforma = Math.round(subtotal * 0.06); // 6% para YACLICK.SHOP
-            let pagoVendedor = subtotal - comisionPlataforma;
-
-            cont.innerHTML = `
-                ${carrito.map(item => `
-                    <div class="bg-[#141420] p-3 rounded-xl border border-gray-800 flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-sm">${item.producto}</p>
-                            <p class="text-[10px] text-gray-400">${item.tienda}</p>
-                        </div>
-                        <p class="font-bold text-fuchsia-400">$${item.precio.toLocaleString("es-CL")}</p>
-                    </div>
-                `).join('')}
-                
-                <div class="bg-[#181826] p-4 rounded-2xl border border-fuchsia-500/30 space-y-2 text-xs">
-                    <div class="flex justify-between text-gray-300">
-                        <span>Subtotal Productos:</span>
-                        <span>$${subtotal.toLocaleString("es-CL")} CLP</span>
-                    </div>
-                    <div class="flex justify-between text-cyan-400 font-semibold">
-                        <span>Comisión Automática Yaclick (6%):</span>
-                        <span>$${comisionPlataforma.toLocaleString("es-CL")} CLP</span>
-                    </div>
-                    <div class="flex justify-between text-gray-400">
-                        <span>Monto Directo a Tienda (94%):</span>
-                        <span>$${pagoVendedor.toLocaleString("es-CL")} CLP</span>
-                    </div>
-                    <div class="flex justify-between font-bold text-sm pt-2 border-t border-gray-700 text-white">
-                        <span>Total Orden:</span>
-                        <span class="text-green-400">$${subtotal.toLocaleString("es-CL")} CLP</span>
-                    </div>
-                </div>
-
-                <button onclick="procesarPagoYWhatsApp(${subtotal})" class="w-full py-3 rounded-xl font-bold bg-green-600 hover:bg-green-500 text-white text-sm shadow-lg">
-                    📲 Pagar y Coordinar por WhatsApp Logístico ✅
-                </button>
-            `;
-        }
-
-        function enviarMensajeChat() {
-            const input = document.getElementById("input-chat");
-            const caja = document.getElementById("caja-chat");
-            if(!input.value.trim()) return;
-
-            caja.innerHTML += `<p><strong class="text-cyan-400">Tú:</strong> ${input.value}</p>`;
-            let textoUsuario = input.value;
-            input.value = "";
-
-            setTimeout(() => {
-                caja.innerHTML += `<p><strong class="text-fuchsia-400">Agente IA Yaclick:</strong> ¡Entendido! Tu consulta sobre "${textoUsuario}" fue registrada. Te ayudamos a coordinar el despacho seguro en Santiago o regiones.</p>`;
-                caja.scrollTop = caja.scrollHeight;
-            }, 800);
-        }
-
-        function procesarPagoYWhatsApp(total) {
-            alert(`¡Simulación de Split Payment (6%) procesada con éxito!\nRedirigiendo a WhatsApp Logístico...`);
-            let mensaje = encodeURIComponent(`Hola YACLICK.SHOP, quiero confirmar mi compra por un total de $${total.toLocaleString("es-CL")} CLP. Solicito envío logístico.`);
-            window.open(`https://wa.me/56900000000?text=${mensaje}`, '_blank');
-        }
-
-        renderSalas();
-    </script>
+    renderBarraNivel(0);
+    renderVentanasSelector();
+    renderFotosSemana();
+    renderCatalogo(productosCatalogo);
+    actualizarCarrito();
+  </script>
 </body>
 </html>
